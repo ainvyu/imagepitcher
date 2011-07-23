@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#define _COMPILING_DLL
-
 #include <functional>
 
 #include "EncryptionManager.h"
