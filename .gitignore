@@ -1,0 +1,8 @@
+
+/ipch
+/imagepitcher/Debug
+*.sdf
+*.opensdf
+*.aps
+*.suo
+*.vcxproj.user
