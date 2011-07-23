@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{09e4dd04-3eb8-47cd-ab5a-8e05b37524ec}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1d121ac7-7cb6-41ec-b2f9-1660e5f21e42}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{5286b1dc-5365-4628-b826-0048b55deed2}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{0ba58cfa-b071-4f4b-9e8b-d12a1a72adce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util\parser">
+      <UniqueIdentifier>{8a2e70db-37ee-4291-b33c-39e4194438c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util\parser\xml">
+      <UniqueIdentifier>{68adca9b-8e3c-4032-a356-51b25a85159f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util\http">
+      <UniqueIdentifier>{6f70982b-d1cf-4f4f-b1b0-ba496fb6957c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util\crypt">
+      <UniqueIdentifier>{e6cc1021-569a-436e-ba30-c255e984bea2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imagepitcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="twitpicuploader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stringutil.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="hangulstringutil.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="pugixml-1.0\src\pugixml.cpp">
+      <Filter>util\parser\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="httppost.cpp">
+      <Filter>util\http</Filter>
+    </ClCompile>
+    <ClCompile Include="oauth.cpp">
+      <Filter>util\http</Filter>
+    </ClCompile>
+    <ClCompile Include="httpget.cpp">
+      <Filter>util\http</Filter>
+    </ClCompile>
+    <ClCompile Include="hmac_sha1.cpp">
+      <Filter>util\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="sha1.cpp">
+      <Filter>util\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="simplebase64.cpp">
+      <Filter>util\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="urlencode.cpp">
+      <Filter>util\crypt</Filter>
+    </ClCompile>
+    <ClCompile Include="maindlg.CPP">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="appdatafile.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="encryptionmanager.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="filecache.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="textfile.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="stringencode.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="utf8_codecvt_facet.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="twitpicuploader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringutil.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="hangulstringutil.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="pugixml-1.0\src\pugiconfig.hpp">
+      <Filter>util\parser\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="pugixml-1.0\src\pugixml.hpp">
+      <Filter>util\parser\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="httppost.h">
+      <Filter>util\http</Filter>
+    </ClInclude>
+    <ClInclude Include="oauth.h">
+      <Filter>util\http</Filter>
+    </ClInclude>
+    <ClInclude Include="httpget.h">
+      <Filter>util\http</Filter>
+    </ClInclude>
+    <ClInclude Include="hmac_sha1.h">
+      <Filter>util\crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="sha1.h">
+      <Filter>util\crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="simplebase64.h">
+      <Filter>util\crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="urlencode.h">
+      <Filter>util\crypt</Filter>
+    </ClInclude>
+    <ClInclude Include="appdatafile.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="encryptionmanager.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="macro.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="filecache.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="textfile.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="stringencode.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="utf8_codecvt_facet.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="imagepitcher.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\imagepitcher.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>
