@@ -15,10 +15,10 @@ namespace fs = boost::filesystem;
 using boost::asio::ip::tcp;
 
 const string upload_url = "api.twitpic.com";
-const string get_url = "/2/upload.xml";
+const string get_url = "/2/upload.json";
 
 CTwitpicUploader::CTwitpicUploader(CTwitterOAuth& _oauth)
-  : oauth_(_oauth)
+  : OAuth(_oauth)
 {
 }
 
@@ -26,22 +26,22 @@ CTwitpicUploader::~CTwitpicUploader(void)
 {
 }
 
-std::string CTwitpicUploader::GenerateTimeStamp() {
+std::string CTwitpicUploader::generateTimeStamp() {
   return CStringUtil::Int64ToStrA(time(NULL));
 }
 
-std::string CTwitpicUploader::GenerateNonce() {
+std::string CTwitpicUploader::generateNonce() {
   return CStringUtil::MakeRadomStringA(32);
 }
 
-void CTwitpicUploader::AddPicture( const string& strPath )
+void CTwitpicUploader::addPicture( const string& strPath )
 {
   filelist_.push_back(strPath);
 }
 
-std::string CTwitpicUploader::MakeSignature(const SignatureData& data) {
+std::string CTwitpicUploader::makeSignature(const SignatureData& data) {
   stringstream ssBaseString;
-  string key = oauth_.GetConsumerSecret() + "&" + oauth_.GetRequestToken();
+  string key = OAuth.getConsumerSecret() + "&" + OAuth.getRequestToken();
 
   // Build base string.
   // base string은 http header로 보내는 파라미터이다.
@@ -71,70 +71,70 @@ std::string CTwitpicUploader::MakeSignature(const SignatureData& data) {
   return CUrlEncode::URLEncode(CSimpleBase64::Encode(hmacString));
 }
 
-void CTwitpicUploader::DoAuthorize() {
+void CTwitpicUploader::doAuthorize() {
   std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
   std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
 
-  oauth_.SetConsumerKey(consumerKey);
-  oauth_.SetConsumerSecret(consumerSecret);
-  oauth_.SetSignatureMethod("HMAC-SHA1");
+  OAuth.setConsumerKey(consumerKey);
+  OAuth.setConsumerSecret(consumerSecret);
+  OAuth.setSignatureMethod("HMAC-SHA1");
   //oauth_.DoAuth();
-  oauth_.DoRequestToken();
-  oauth_.DoAuthorize();
+  OAuth.doRequestToken();
+  OAuth.doAuthorize();
 }
 
-void CTwitpicUploader::DoUpload()
+void CTwitpicUploader::doUpload()
 {
   for (auto it = filelist_.cbegin(), _end = filelist_.cend(); it != _end; ++it) {
     const std::string& filePath = (*it);
-    const std::string& boundary = MakeBoundary();
-    const std::string& content = MakeContent(filePath, boundary);
+    const std::string& boundary = makeBoundary();
+    const std::string& content = makeContent(filePath, boundary);
     
-    string nonce = GenerateNonce();
-    string timeStamp = GenerateTimeStamp();
+    string nonce = generateNonce();
+    string timeStamp = generateTimeStamp();
 
     SignatureData data;
     data.method = "POST";
     data.requestUrl = "http://" + upload_url + get_url;
     data.parameter["realm"] = "http://api.twitter.com/";
-    data.parameter["oauth_consumer_key"] = oauth_.GetConsumerKey();
+    data.parameter["oauth_consumer_key"] = OAuth.getConsumerKey();
     data.parameter["oauth_signature_method"] = "HMAC-SHA1";
-    data.parameter["oauth_token"] = oauth_.GetAccessToken();
+    data.parameter["oauth_token"] = OAuth.getAccessToken();
     data.parameter["oauth_timestamp"] = timeStamp;
     data.parameter["oauth_nonce"] = nonce;
     data.parameter["oauth_version"] = "1.0";    
 
     CHttpPost post;
-    post.AddHeader("X-Verify-Credentials-Authorization", 
+    post.addHeader("X-Verify-Credentials-Authorization", 
       PostItem("OAuth realm", "=", "http://api.twitter.com/"));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_consumer_key", "=", oauth_.GetConsumerKey()));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
+    post.addHeader("X-Verify-Credentials-Authorization", 
+      PostItem("oauth_consumer_key", "=", OAuth.getConsumerKey()));
+    post.addHeader("X-Verify-Credentials-Authorization", 
       PostItem("oauth_signature_method", "=", "HMAC-SHA1"));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_token", "=", oauth_.GetAccessToken()));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
+    post.addHeader("X-Verify-Credentials-Authorization", 
+      PostItem("oauth_token", "=", OAuth.getAccessToken()));
+    post.addHeader("X-Verify-Credentials-Authorization", 
       PostItem("oauth_timestamp", "=", timeStamp));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
+    post.addHeader("X-Verify-Credentials-Authorization", 
       PostItem("oauth_nonce", "=", nonce));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
+    post.addHeader("X-Verify-Credentials-Authorization", 
       PostItem("oauth_version", "=", "1.0"));
-    post.AddHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_signature", "=", MakeSignature(data)));
+    post.addHeader("X-Verify-Credentials-Authorization", 
+      PostItem("oauth_signature", "=", makeSignature(data)));
 
-    post.AddHeader("X-Auth-Service-Provider", 
+    post.addHeader("X-Auth-Service-Provider", 
       PostItem("", "", "https://api.twitter.com/1/account/verify_credentials.json"));
 
-    post.SetURL(upload_url);
-    post.SetPath(get_url);
-    post.SetBoundary(boundary);
-    post.SetContent(content);
-    post.SetUserAgent("Image Pitcher");
+    post.setURL(upload_url);
+    post.setPath(get_url);
+    post.setBoundary(boundary);
+    post.setContent(content);
+    post.setUserAgent("Image Pitcher");
 
-    if (!post.DoPost())
+    if (!post.doPost())
       break;
     
-    const std::string& response = post.GetResponse();
+    const std::string& response = post.getResponse();
     MessageBoxA(NULL, response.c_str(), "Reponse", MB_OK);
 //     pugi::xml_document doc;
 //     pugi::xml_parse_result result = doc.load(response.c_str());
@@ -143,7 +143,7 @@ void CTwitpicUploader::DoUpload()
   }
 }
 
-const std::vector<char> CTwitpicUploader::GetPictureBinary(const std::string& filePath) {
+const std::vector<char> CTwitpicUploader::getPictureBinary(const std::string& filePath) {
   std::vector<char> binary;
   binary.reserve((int)fs::file_size(fs::path(filePath)));
 
@@ -158,7 +158,7 @@ const std::vector<char> CTwitpicUploader::GetPictureBinary(const std::string& fi
   return binary;
 }
 
-std::string CTwitpicUploader::MakeContent(const std::string& filePath, 
+std::string CTwitpicUploader::makeContent(const std::string& filePath, 
                                           const std::string& boundary) {
   const string& header = "--" + boundary;
   const string& footer = "--" + boundary + "--";
@@ -176,11 +176,11 @@ std::string CTwitpicUploader::MakeContent(const std::string& filePath,
   ssContents << tweetMsg_ << "\r\n";
 
   ssContents << header << "\r\n";
-  string fileContentType = GetImageContentType(filePath);
+  string fileContentType = getImageContentType(filePath);
   string fileHeader = 
     CStringUtil::Format("Content-Disposition: file; name=\"media\"; filename=\"%s\"", 
                         fs::path(filePath).filename().string<string>().c_str());
-  const vector<char> fileData = GetPictureBinary(filePath);
+  const vector<char> fileData = getPictureBinary(filePath);
 
   ssContents << fileHeader << "\r\n";
   ssContents << "Content-Type: " << fileContentType << "\r\n";
@@ -194,7 +194,7 @@ std::string CTwitpicUploader::MakeContent(const std::string& filePath,
   return ssContents.str();
 }
 
-std::string CTwitpicUploader::GetImageContentType(const std::string& filePath) {
+std::string CTwitpicUploader::getImageContentType(const std::string& filePath) {
   boost::filesystem::path image_path(filePath);
   string ext = image_path.extension().string();
 
@@ -211,6 +211,6 @@ std::string CTwitpicUploader::GetImageContentType(const std::string& filePath) {
   return "image/jpeg";
 }
 
-std::string CTwitpicUploader::MakeBoundary() {
+std::string CTwitpicUploader::makeBoundary() {
   return CStringUtil::MakeRadomStringA(16);
 }

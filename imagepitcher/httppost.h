@@ -18,17 +18,17 @@ public:
   CHttpPost(void);
   virtual ~CHttpPost(void);
 
-  void SetBoundary(const std::string& _boundary) { boundary_ = _boundary; }
-  void SetURL(const std::string& _url) { url_ = _url; }
-  void SetPath(const std::string& _path) { path_ = _path; }
-  void SetContent(const std::string& _content) { content_ = _content; }
-  void SetUserAgent(const std::string& _userAgent) { userAgent_ = _userAgent; }
-  void SetPort(const std::string& _port) { port_ = _port; }
-  void AddHeader(const std::string& _section, PostItem item);
-  void RegisterSectionSeparator(const std::string& _section, const std::string& _sep);
+  void setBoundary(const std::string& _boundary) { boundary_ = _boundary; }
+  void setURL(const std::string& _url) { url_ = _url; }
+  void setPath(const std::string& _path) { path_ = _path; }
+  void setContent(const std::string& _content) { content_ = _content; }
+  void setUserAgent(const std::string& _userAgent) { userAgent_ = _userAgent; }
+  void setPort(const std::string& _port) { port_ = _port; }
+  void addHeader(const std::string& _section, PostItem item);
+  void registerSectionSeparator(const std::string& _section, const std::string& _sep);
 
-  bool DoPost(void);
-  const std::string& GetResponse() const { return response_; }
+  bool doPost(void);
+  const std::string& getResponse() const { return response_; }
 
 private:
   typedef std::unordered_map<std::string, std::list<PostItem>> headerHash;

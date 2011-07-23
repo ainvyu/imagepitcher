@@ -50,6 +50,6 @@ public:
   void CloseDialog(int nVal);
 
 private:
-  CTwitterOAuth oauth_;
-  CTwitpicUploader uploader_;
+  CTwitterOAuth OAuth;
+  CTwitpicUploader Uploader;
 };

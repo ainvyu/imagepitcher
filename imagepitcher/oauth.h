@@ -19,10 +19,10 @@ class IOAuth
 public:
   virtual ~IOAuth() {}
 
-  virtual bool DoAuth() = 0;
-  virtual bool DoRequestToken() = 0;
-  virtual bool DoAuthorize() = 0;
-  virtual bool DoAccessToken() = 0;
+  virtual bool doAuth() = 0;
+  virtual bool doRequestToken() = 0;
+  virtual bool doAuthorize() = 0;
+  virtual bool doAccessToken() = 0;
 };
 
 namespace oauthurl {
@@ -39,33 +39,33 @@ public:
   CTwitterOAuth(void);
   virtual ~CTwitterOAuth(void);
 
-  void SetCallbackURL(const std::string& _url) { callbackUrl_ = _url; }
-  void SetSignatureMethod(const std::string& _method) { signatureMethod_ = _method; }
-  void SetConsumerKey(const std::string& _key) { consumerKey_ = _key; }
-  std::string GetConsumerKey() const { return consumerKey_; }
-  void SetConsumerSecret(const std::string& _secret) { consumerSecret_ = _secret; }
-  std::string GetConsumerSecret() const { return consumerSecret_; }
-  void SetOAuthVerifier(const std::string& _verifier) { oAuthVerifier_ = _verifier; }
+  void setCallbackURL(const std::string& _url) { callbackUrl_ = _url; }
+  void setSignatureMethod(const std::string& _method) { signatureMethod_ = _method; }
+  void setConsumerKey(const std::string& _key) { consumerKey_ = _key; }
+  std::string getConsumerKey() const { return consumerKey_; }
+  void setConsumerSecret(const std::string& _secret) { consumerSecret_ = _secret; }
+  std::string getConsumerSecret() const { return consumerSecret_; }
+  void setOAuthVerifier(const std::string& _verifier) { oAuthVerifier_ = _verifier; }
 
-  const std::string& GetRequestToken() const { return requestToken_; }
-  const std::string& GetRequestTokenSecret() const { return requestTokenSecret_; }
-  const std::string& GetAccessToken() const { return accessToken_; }
-  const std::string& GetAccessSecret() const { return accessTokenSecret_; }
+  const std::string& getRequestToken() const { return requestToken_; }
+  const std::string& getRequestTokenSecret() const { return requestTokenSecret_; }
+  const std::string& getAccessToken() const { return accessToken_; }
+  const std::string& getAccessSecret() const { return accessTokenSecret_; }
 
-  virtual bool DoAuth();
-  virtual bool DoRequestToken();
-  virtual bool DoAuthorize();
-  virtual bool DoAccessToken();
+  virtual bool doAuth();
+  virtual bool doRequestToken();
+  virtual bool doAuthorize();
+  virtual bool doAccessToken();
 
-  void SetRequestToken(const std::string& _requestToken) { requestToken_ = _requestToken; }
-  void SetRequestTokenSecret(const std::string& _requestTokenSecret) { requestTokenSecret_ = _requestTokenSecret; }
-  void SetAccessToken(const std::string& _accessToken) { accessToken_ = _accessToken; }
-  void SetAccessSecret(const std::string& _accessSecret) { accessTokenSecret_= _accessSecret; }
+  void setRequestToken(const std::string& _requestToken) { requestToken_ = _requestToken; }
+  void setRequestTokenSecret(const std::string& _requestTokenSecret) { requestTokenSecret_ = _requestTokenSecret; }
+  void setAccessToken(const std::string& _accessToken) { accessToken_ = _accessToken; }
+  void setAccessSecret(const std::string& _accessSecret) { accessTokenSecret_= _accessSecret; }
   
 
 protected:
-  std::string GenerateTimeStamp();
-  std::string GenerateNonce();
+  std::string generateTimeStamp();
+  std::string generateNonce();
   std::string makeSignature(const SignatureData& data) const;
 
 private:

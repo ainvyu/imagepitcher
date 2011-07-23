@@ -10,27 +10,27 @@ public:
   CTwitpicUploader(CTwitterOAuth& _oauth);
   ~CTwitpicUploader(void);
 
-  void SetAPIKey(const std::string& _apiKey) { apiKey_ = _apiKey; }
-  void SetTweetMessage(const std::string& _twtMsg) { tweetMsg_ = _twtMsg; }
+  void setAPIKey(const std::string& _apiKey) { apiKey_ = _apiKey; }
+  void setTweetMessage(const std::string& _twtMsg) { tweetMsg_ = _twtMsg; }
 
-  void AddPicture(const std::string& strPath);
-  void DoUpload();
-  void DoAuthorize();
+  void addPicture(const std::string& strPath);
+  void doUpload();
+  void doAuthorize();
 
 private:
-  std::string MakeContent(const std::string& filePath, const std::string& boundary);
-  std::string MakeBoundary();
-  std::string GetImageContentType(const std::string& path);
-  const std::vector<char> GetPictureBinary(const std::string& filePath);
-  std::string MakeSignature(const SignatureData& data);
-  std::string GenerateTimeStamp();
-  std::string GenerateNonce();
+  std::string makeContent(const std::string& filePath, const std::string& boundary);
+  std::string makeBoundary();
+  std::string getImageContentType(const std::string& path);
+  const std::vector<char> getPictureBinary(const std::string& filePath);
+  std::string makeSignature(const SignatureData& data);
+  std::string generateTimeStamp();
+  std::string generateNonce();
 
 private:
   std::list<std::string> filelist_;
   std::string apiKey_;
   std::string tweetMsg_;
 
-  CTwitterOAuth& oauth_;
+  CTwitterOAuth& OAuth;
 };
 

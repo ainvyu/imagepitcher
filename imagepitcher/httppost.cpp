@@ -15,7 +15,7 @@ CHttpPost::~CHttpPost(void)
 {
 }
 
-bool CHttpPost::DoPost(void) {
+bool CHttpPost::doPost(void) {
   tcp::resolver resolver(io_service_);
   tcp::resolver::query query(url_, port_);
 
@@ -66,38 +66,38 @@ bool CHttpPost::DoPost(void) {
     else
       post << section << (*sep_it).second;
     
-    std::string items_string;
-    items_string.reserve(33);
+    std::string itemsHeaderString;
+    itemsHeaderString.reserve(33);
     for (auto list_it = itemList.cbegin(), list_end = itemList.end();
          list_it != list_end; ++list_it) {
       const PostItem& item = (*list_it);
 
       if (!item.name.empty())
-        items_string += item.name + item.separator + "\"" + item.value + "\", ";
+        itemsHeaderString += item.name + item.separator + "\"" + item.value + "\", ";
       else
-        items_string += item.value + "; ";
+        itemsHeaderString += item.value + "; ";
     }
-    if (!items_string.empty()) {
+    if (!itemsHeaderString.empty()) {
       // 맨 뒤에 공백 제거
-      items_string.erase(items_string.end()-1);
+      itemsHeaderString.erase(itemsHeaderString.end()-1);
       // 그리고 맨 마지막의 ,나 ; 제거
-      items_string.erase(items_string.end()-1);
+      itemsHeaderString.erase(itemsHeaderString.end()-1);
     }
 
-    post << items_string;
+    post << itemsHeaderString;
     post << "\r\n";
   }
 
   post << "\r\n";
 
-  const string& strPost = post.str();
+  const string& postString = post.str();
   // Send POST Header
-  socket.send(boost::asio::buffer(strPost.c_str(), strPost.size()));
+  socket.send(boost::asio::buffer(postString.c_str(), postString.size()));
 
   // Send POST Content
   int totalSendedSize = 0;
   int remainSize = content_.size();
-
+  int streamSize = 0;
   try {
     while (remainSize != 0) {
       int sendSize;
@@ -107,7 +107,7 @@ bool CHttpPost::DoPost(void) {
       else
         sendSize = 16*1024;
 
-      int streamSize = socket.send(boost::asio::buffer(content_.c_str()+totalSendedSize, sendSize));
+      streamSize = socket.send(boost::asio::buffer(content_.c_str()+totalSendedSize, sendSize));
       remainSize -= streamSize;
       totalSendedSize += streamSize;
     }
@@ -140,7 +140,7 @@ bool CHttpPost::DoPost(void) {
   return true;
 }
 
-void CHttpPost::AddHeader( const std::string& _section, PostItem _item )
+void CHttpPost::addHeader( const std::string& _section, PostItem _item )
 {
   auto it = customHeader_.find(_section);
   if (it == customHeader_.end()) {
@@ -153,7 +153,7 @@ void CHttpPost::AddHeader( const std::string& _section, PostItem _item )
   itemList.push_back(_item);
 }
 
-void CHttpPost::RegisterSectionSeparator( const std::string& _section, const std::string& _sep )
+void CHttpPost::registerSectionSeparator( const std::string& _section, const std::string& _sep )
 {
   sectionSepHash_.insert(unordered_map<string, string>::value_type(_section, _sep));
 }

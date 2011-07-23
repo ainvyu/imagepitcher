@@ -20,36 +20,36 @@ CTwitterOAuth::~CTwitterOAuth( void )
 
 }
 
-std::string CTwitterOAuth::GenerateTimeStamp() {
+std::string CTwitterOAuth::generateTimeStamp() {
   return CStringUtil::Int64ToStrA(time(NULL));
 }
 
-std::string CTwitterOAuth::GenerateNonce() {
+std::string CTwitterOAuth::generateNonce() {
   return CStringUtil::MakeRadomStringA(32);
 }
 
-bool CTwitterOAuth::DoAuth()
+bool CTwitterOAuth::doAuth()
 {
   // 1. POST Request Token
-  DoRequestToken();
+  doRequestToken();
   // 2. POST Authorize
-  DoAuthorize();
+  doAuthorize();
   // 3. POST Access Token
-  DoAccessToken();
+  doAccessToken();
 
   return true;
 }
 
-bool CTwitterOAuth::DoRequestToken()
+bool CTwitterOAuth::doRequestToken()
 {
   CHttpPost post;
-  post.SetURL(oauthurl::REQUEST_URL);
-  post.SetPort(oauthurl::REQUEST_PORT);
-  post.SetPath(oauthurl::REQUEST_TOKEN);
-  post.SetUserAgent("Image Pitcher");
+  post.setURL(oauthurl::REQUEST_URL);
+  post.setPort(oauthurl::REQUEST_PORT);
+  post.setPath(oauthurl::REQUEST_TOKEN);
+  post.setUserAgent("Image Pitcher");
 
-  string nonce = GenerateNonce();
-  string timeStamp = GenerateTimeStamp();
+  string nonce = generateNonce();
+  string timeStamp = generateTimeStamp();
 
   // oauth_nonce는 개발자가 임의로 생성
   //post.RegisterSectionSeparator("OAuth", " ");
@@ -65,29 +65,29 @@ bool CTwitterOAuth::DoRequestToken()
   data.parameter["oauth_version"] = oAuthVersion_;
 
   if (!callbackUrl_.empty())
-    post.AddHeader("Authorization", PostItem("oauth_callback", "=", callbackUrl_));
+    post.addHeader("Authorization", PostItem("oauth_callback", "=", callbackUrl_));
 
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("OAuth oauth_consumer_key", "=", consumerKey_));  
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_nonce", "=", nonce)); 
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_signature_method", "=", signatureMethod_));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_timestamp", "=", timeStamp));
   
-  post.AddHeader("Authorization",
+  post.addHeader("Authorization",
     PostItem("oauth_signature", "=", makeSignature(data)));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_version", "=", oAuthVersion_));
 
-  if (!post.DoPost())
+  if (!post.doPost())
     return false;
 
   // oauth_token=zd9BdHtPAOhhaJyo4xhfFTAvDtMG5dWefLTiKMXHrk&oauth_token_secret=pSrAL9TRqYQ18WJuOfXoeek2tUdayglU5MCdKfMXCY&oauth_callback_confirmed=true
   // Token Parsing  
   unordered_map<string, string> response_map;
-  const string& response = post.GetResponse();
+  const string& response = post.getResponse();
   int pos_start_content = response.find("\r\n\r\n") + 4;
   string content = response.substr(pos_start_content);
 
@@ -139,7 +139,7 @@ std::string CTwitterOAuth::makeSignature(const SignatureData& data) const {
   return CUrlEncode::URLEncode(CSimpleBase64::Encode(hmacString));
 }
 
-bool CTwitterOAuth::DoAuthorize()
+bool CTwitterOAuth::doAuthorize()
 {
   string authorizeUrl = "http://" + oauthurl::REQUEST_URL + oauthurl::AUTHORIZE + "?oauth_token=" + requestToken_;
   ShellExecuteA(NULL, "open", authorizeUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
@@ -147,16 +147,16 @@ bool CTwitterOAuth::DoAuthorize()
   return true;
 }
 
-bool CTwitterOAuth::DoAccessToken()
+bool CTwitterOAuth::doAccessToken()
 {
   CHttpPost post;
-  post.SetURL(oauthurl::REQUEST_URL);
-  post.SetPort(oauthurl::REQUEST_PORT);
-  post.SetPath(oauthurl::ACCESS_TOKEN);
-  post.SetUserAgent("Image Pitcher");
+  post.setURL(oauthurl::REQUEST_URL);
+  post.setPort(oauthurl::REQUEST_PORT);
+  post.setPath(oauthurl::ACCESS_TOKEN);
+  post.setUserAgent("Image Pitcher");
 
-  string nonce = GenerateNonce();
-  string timeStamp = GenerateTimeStamp();
+  string nonce = generateNonce();
+  string timeStamp = generateTimeStamp();
 
   // oauth_nonce는 개발자가 임의로 생성
   //post.RegisterSectionSeparator("OAuth", " ");
@@ -174,32 +174,32 @@ bool CTwitterOAuth::DoAccessToken()
   data.parameter["oauth_version"] = oAuthVersion_;
 
   if (!callbackUrl_.empty())
-    post.AddHeader("Authorization", PostItem("oauth_callback", "=", callbackUrl_));
+    post.addHeader("Authorization", PostItem("oauth_callback", "=", callbackUrl_));
 
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("OAuth oauth_consumer_key", "=", consumerKey_));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_nonce", "=", nonce)); 
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_signature_method", "=", signatureMethod_));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_token", "=", requestToken_));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_timestamp", "=", timeStamp));
-  post.AddHeader("Authorization",
+  post.addHeader("Authorization",
     PostItem("oauth_signature", "=", makeSignature(data)));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_verifier", "=", oAuthVerifier_));
-  post.AddHeader("Authorization", 
+  post.addHeader("Authorization", 
     PostItem("oauth_version", "=", oAuthVersion_));
 
-  if (!post.DoPost())
+  if (!post.doPost())
     return false;
 
   // oauth_token=14897835-eWIBYtkp6sA2HBcNEZS3Wx2tfBRwOS1c3qhDporIl&oauth_token_secret=ucKjAuDC08Rqfpo28bik3HoyRpmmwT0rv84WE1E7j0&user_id=14897835&screen_name=nving
   // Token Parsing 
   unordered_map<string, string> response_map;
-  const string& response = post.GetResponse();
+  const string& response = post.getResponse();
   int pos_start_content = response.find("\r\n\r\n") + 4;
   string content = response.substr(pos_start_content);
 
