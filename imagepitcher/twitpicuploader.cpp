@@ -14,9 +14,6 @@ using namespace std;
 namespace fs = boost::filesystem;
 using boost::asio::ip::tcp;
 
-const string upload_url = "api.twitpic.com";
-const string get_url = "/2/upload.xml";
-
 CTwitpicUploader::CTwitpicUploader(CTwitterOAuth& _oauth)
   : OAuth(_oauth)
 {
@@ -78,7 +75,7 @@ void CTwitpicUploader::doAuthorize() {
   OAuth.setConsumerKey(consumerKey);
   OAuth.setConsumerSecret(consumerSecret);
   OAuth.setSignatureMethod("HMAC-SHA1");
-  //oauth_.DoAuth();
+
   OAuth.doRequestToken();
   OAuth.doAuthorize();
 }
@@ -90,43 +87,14 @@ void CTwitpicUploader::doUpload()
     const std::string& boundary = makeBoundary();
     const std::string& content = makeContent(filePath, boundary);
     
-    string nonce = generateNonce();
-    string timeStamp = generateTimeStamp();
-
-    SignatureData data;
-    data.method = "POST";
-    data.requestUrl = "http://" + upload_url + get_url;
-    data.parameter["realm"] = "http://api.twitter.com/";
-    data.parameter["oauth_consumer_key"] = OAuth.getConsumerKey();
-    data.parameter["oauth_signature_method"] = "HMAC-SHA1";
-    data.parameter["oauth_token"] = OAuth.getAccessToken();
-    data.parameter["oauth_timestamp"] = timeStamp;
-    data.parameter["oauth_nonce"] = nonce;
-    data.parameter["oauth_version"] = "1.0";    
+    nonce = generateNonce();
+    timeStamp = generateTimeStamp();
 
     CHttpPost post;
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("OAuth realm", "=", "http://api.twitter.com/"));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_consumer_key", "=", OAuth.getConsumerKey()));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_signature_method", "=", "HMAC-SHA1"));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_token", "=", OAuth.getAccessToken()));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_timestamp", "=", timeStamp));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_nonce", "=", nonce));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_version", "=", "1.0"));
-    post.addHeader("X-Verify-Credentials-Authorization", 
-      PostItem("oauth_signature", "=", makeSignature(data)));
+    addCustomHeader(post);
 
-    post.addHeader("X-Auth-Service-Provider", 
-      PostItem("", "", "https://api.twitter.com/1/account/verify_credentials.json"));
-
-    post.setURL(upload_url);
-    post.setPath(get_url);
+    post.setURL(getUploadUrl());
+    post.setPath(getUploadPath());
     post.setBoundary(boundary);
     post.setContent(content);
     post.setUserAgent("Image Pitcher");
@@ -141,6 +109,10 @@ void CTwitpicUploader::doUpload()
 //     if (!result)
 //       break;
   }
+}
+
+void CTwitpicUploader::addCustomHeader(CHttpPost& post) {
+  // nothing
 }
 
 const std::vector<char> CTwitpicUploader::getPictureBinary(const std::string& filePath) {
@@ -158,17 +130,38 @@ const std::vector<char> CTwitpicUploader::getPictureBinary(const std::string& fi
   return binary;
 }
 
-std::string CTwitpicUploader::makeContent(const std::string& filePath, 
-                                          const std::string& boundary) {
+string CTwitpicUploader::makeContent(const std::string& filePath, 
+                                     const std::string& boundary) 
+{
   const string& header = "--" + boundary;
   const string& footer = "--" + boundary + "--";
-  
+
   stringstream ssContents;
 
   ssContents << header << "\r\n";
   ssContents << "Content-Disposition: form-data; name=\"key\"" << "\r\n";
   ssContents << "\r\n";
   ssContents << apiKey_ << "\r\n";
+
+  ssContents << header << "\r\n";
+  ssContents << "Content-Disposition: form-data; name=\"consumer_token\"" << "\r\n";
+  ssContents << "\r\n";
+  ssContents << OAuth.getConsumerKey() << "\r\n";
+
+  ssContents << header << "\r\n";
+  ssContents << "Content-Disposition: form-data; name=\"consumer_secret\"" << "\r\n";
+  ssContents << "\r\n";
+  ssContents << OAuth.getConsumerSecret() << "\r\n";
+
+  ssContents << header << "\r\n";
+  ssContents << "Content-Disposition: form-data; name=\"oauth_token\"" << "\r\n";
+  ssContents << "\r\n";
+  ssContents << OAuth.getAccessToken() << "\r\n";
+
+  ssContents << header << "\r\n";
+  ssContents << "Content-Disposition: form-data; name=\"oauth_secret\"" << "\r\n";
+  ssContents << "\r\n";
+  ssContents << OAuth.getAccessSecret() << "\r\n";
 
   ssContents << header << "\r\n";
   ssContents << "Content-Disposition: form-data; name=\"message\"" << "\r\n";
@@ -179,14 +172,14 @@ std::string CTwitpicUploader::makeContent(const std::string& filePath,
   string fileContentType = getImageContentType(filePath);
   string fileHeader = 
     CStringUtil::Format("Content-Disposition: file; name=\"media\"; filename=\"%s\"", 
-                        fs::path(filePath).filename().string<string>().c_str());
+    fs::path(filePath).filename().string<string>().c_str());
   const vector<char> fileData = getPictureBinary(filePath);
 
   ssContents << fileHeader << "\r\n";
   ssContents << "Content-Type: " << fileContentType << "\r\n";
   ssContents << "\r\n";
   std::copy(fileData.begin(), fileData.end(),
-            ostream_iterator<char> (ssContents));
+    ostream_iterator<char> (ssContents));
   ssContents << "\r\n";
 
   ssContents << footer << "\r\n";
