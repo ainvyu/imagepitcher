@@ -5,10 +5,19 @@
 #include "AboutDlg.h"
 #include "appdatafile.h"
 
+using namespace std;
+
 CMainDlg::CMainDlg()
   : Uploader(OAuth)
 {
   CAppDataFile::GetInstance()->Init(_T("ImagePitcher"), CUtil::GetModulePath());
+
+  std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
+  std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
+
+  OAuth.setConsumerKey(consumerKey);
+  OAuth.setConsumerSecret(consumerSecret);
+  OAuth.setSignatureMethod("HMAC-SHA1");
 }
 
 BOOL CMainDlg::PreTranslateMessage( MSG* pMsg )
@@ -83,62 +92,64 @@ void CMainDlg::CloseDialog( int nVal )
   ::PostQuitMessage(nVal);
 }
 
-LRESULT CMainDlg::OnBnClickedButtonPin(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-{
-  char pin[32] = {0};
-  GetDlgItemTextA(this->m_hWnd, IDC_EDIT_PIN, pin, 32);
-
-  OAuth.setOAuthVerifier(pin);
-  OAuth.doAccessToken();
-
-  Uploader.addPicture("G:\\test.jpg");
-  Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
-  Uploader.setTweetMessage("test");
-  Uploader.doUpload();
-
-  return 0;
-}
-
 // LRESULT CMainDlg::OnBnClickedButtonPin(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 // {
 //   char pin[32] = {0};
 //   GetDlgItemTextA(this->m_hWnd, IDC_EDIT_PIN, pin, 32);
 // 
-//   std::string accessToken = CONVERT_MULTIBYTE(
-//     CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessToken")));
+//   OAuth.setOAuthVerifier(pin);
+//   OAuth.doAccessToken();
 // 
-//   if (accessToken.empty()) {
-//     oauth_.SetOAuthVerifier(pin);
-//     oauth_.DoAccessToken();
+//   Uploader.addPicture("G:\\test.jpg");
+//   Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
+//   Uploader.setTweetMessage("test");
+//   Uploader.doUpload();
 // 
-//     // Save OAuth data.
-//     CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("RequestToken"),
-//       CONVERT_WIDE(oauth_.GetRequestToken()));
-//     CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("RequestTokenSecret"),
-//       CONVERT_WIDE(oauth_.GetRequestTokenSecret()));
-//     CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("AccessToken"),
-//       CONVERT_WIDE(oauth_.GetAccessToken()));
-//     CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("AccessSecret"),
-//       CONVERT_WIDE(oauth_.GetAccessSecret()));
-//  }
-//   else {
-//     std::string requestToken = CONVERT_MULTIBYTE(
-//       CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("RequestToken")));
-//     std::string requestTokenSecret = CONVERT_MULTIBYTE(
-//       CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("RequestTokenSecret")));
-//     std::string accessSecret = CONVERT_MULTIBYTE(
-//       CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessSecret")));
-//     
-//     oauth_.SetRequestToken(requestToken);
-//     oauth_.SetRequestTokenSecret(requestTokenSecret);
-//     oauth_.SetAccessToken(accessToken);
-//     oauth_.SetAccessSecret(accessSecret);
-//   }
-// 
-//   uploader_.AddPicture("G:\\test.jpg");
-//   uploader_.SetAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
-//   uploader_.SetTweetMessage("test");
-//   uploader_.DoUpload();
-//   
 //   return 0;
 // }
+
+LRESULT CMainDlg::OnBnClickedButtonPin(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+  char pin[32] = {0};
+  GetDlgItemTextA(this->m_hWnd, IDC_EDIT_PIN, pin, 32);
+
+  std::string accessToken = CONVERT_MULTIBYTE(
+    CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessToken")));
+
+  if (accessToken.empty()) {
+    OAuth.setOAuthVerifier(pin);
+    OAuth.doAccessToken();
+
+    // Save OAuth data.
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("RequestToken"),
+      CONVERT_WIDE(OAuth.getRequestToken()));
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("RequestTokenSecret"),
+      CONVERT_WIDE(OAuth.getRequestTokenSecret()));
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("AccessToken"),
+      CONVERT_WIDE(OAuth.getAccessToken()));
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("AccessSecret"),
+      CONVERT_WIDE(OAuth.getAccessSecret()));
+  }
+  else {
+    std::string requestToken = CONVERT_MULTIBYTE(
+      CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("RequestToken")));
+    std::string requestTokenSecret = CONVERT_MULTIBYTE(
+      CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("RequestTokenSecret")));
+    std::string accessSecret = CONVERT_MULTIBYTE(
+      CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessSecret")));
+    
+    OAuth.setRequestToken(requestToken);
+    OAuth.setRequestTokenSecret(requestTokenSecret);
+    OAuth.setAccessToken(accessToken);
+    OAuth.setAccessSecret(accessSecret);
+  }
+
+  string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
+
+  Uploader.addPicture("G:\\test.jpg");
+  Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
+  Uploader.setTweetMessage(tweetMsg);
+  Uploader.doUpload();
+  
+  return 0;
+}
