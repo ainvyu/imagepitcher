@@ -28,15 +28,15 @@
     <Filter Include="util\crypt">
       <UniqueIdentifier>{e6cc1021-569a-436e-ba30-c255e984bea2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Twitpic">
+      <UniqueIdentifier>{ad9d7f1b-93d8-4ae4-8610-b485a6049c46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imagepitcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="twitpicuploader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stringutil.cpp">
@@ -96,6 +96,12 @@
     <ClCompile Include="utf8_codecvt_facet.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="twitpicuploader.cpp">
+      <Filter>Twitpic</Filter>
+    </ClCompile>
+    <ClCompile Include="twitpicuploader2.cpp">
+      <Filter>Twitpic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -108,9 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="twitpicuploader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stringutil.h">
@@ -169,6 +172,12 @@
     </ClInclude>
     <ClInclude Include="utf8_codecvt_facet.hpp">
       <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="twitpicuploader.h">
+      <Filter>Twitpic</Filter>
+    </ClInclude>
+    <ClInclude Include="twitpicuploader2.h">
+      <Filter>Twitpic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
