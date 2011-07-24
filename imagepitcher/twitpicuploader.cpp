@@ -69,12 +69,7 @@ std::string CTwitpicUploader::makeSignature(const SignatureData& data) {
 }
 
 void CTwitpicUploader::doAuthorize() {
-  std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
-  std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
-
-  OAuth.setConsumerKey(consumerKey);
-  OAuth.setConsumerSecret(consumerSecret);
-  OAuth.setSignatureMethod("HMAC-SHA1");
+  
 
   OAuth.doRequestToken();
   OAuth.doAuthorize();
@@ -124,8 +119,8 @@ const std::vector<char> CTwitpicUploader::getPictureBinary(const std::string& fi
   if (file.fail())
     return binary;
 
-  copy(istream_iterator<char> (file), 
-       istream_iterator<char> (), back_inserter(binary));
+  copy(istreambuf_iterator<char>(file), 
+       istreambuf_iterator<char>(), back_inserter(binary));
 
   return binary;
 }
