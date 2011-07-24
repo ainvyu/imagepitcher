@@ -29,11 +29,17 @@ public:
 
   bool doPost(void);
   const std::string& getResponse() const { return response_; }
+  
+private:
+  std::string makeHeaderString() const;
+  std::string makeCustomHeaderString() const;
+  bool sendContent(boost::asio::ip::tcp::socket& socket) const;
+  std::string recvResponse(boost::asio::ip::tcp::socket& socket) const;
 
 private:
   typedef std::unordered_map<std::string, std::list<PostItem>> headerHash;
-  headerHash customHeader_;
   typedef std::unordered_map<std::string, std::string> sectionSepHash;
+  headerHash customHeader_;
   sectionSepHash sectionSepHash_;
 
   boost::asio::io_service io_service_;

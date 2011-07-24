@@ -15,7 +15,7 @@ namespace fs = boost::filesystem;
 using boost::asio::ip::tcp;
 
 const string upload_url = "api.twitpic.com";
-const string get_url = "/2/upload.json";
+const string get_url = "/2/upload.xml";
 
 CTwitpicUploader::CTwitpicUploader(CTwitterOAuth& _oauth)
   : OAuth(_oauth)

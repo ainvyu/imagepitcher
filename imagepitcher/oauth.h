@@ -61,7 +61,6 @@ public:
   void setRequestTokenSecret(const std::string& _requestTokenSecret) { requestTokenSecret_ = _requestTokenSecret; }
   void setAccessToken(const std::string& _accessToken) { accessToken_ = _accessToken; }
   void setAccessSecret(const std::string& _accessSecret) { accessTokenSecret_= _accessSecret; }
-  
 
 protected:
   std::string generateTimeStamp();

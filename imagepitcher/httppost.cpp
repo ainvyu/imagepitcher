@@ -27,12 +27,12 @@ bool CHttpPost::doPost(void) {
     return false;
   }
 
-  tcp::resolver::iterator end;
+  tcp::resolver::iterator _end;
 
   tcp::socket socket(io_service_);
   boost::system::error_code error = boost::asio::error::host_not_found;
 
-  while (error && endpoint_iterator != end)
+  while (error && endpoint_iterator != _end)
   {
     socket.close();
     socket.connect(*endpoint_iterator++, error);
@@ -43,57 +43,104 @@ bool CHttpPost::doPost(void) {
   }
 
   stringstream post;
-  post << "POST " << path_ << ' ' << "HTTP/1.1" << "\r\n";
-  post << "Host: " << url_ << "\r\n";
-  post << "Connection: keep-alive" << "\r\n";
-  post << "Content-Length: " << content_.size() << "\r\n";
-  post << "User-Agent: " << userAgent_ << "\r\n";
-  post << "Content-Type: multipart/form-data;";
-  if (!boundary_.empty())
-    post << " boundary=" << boundary_ << "\r\n";
-  else
-    post << "\r\n";
-
-  for (auto it = customHeader_.cbegin(), end = customHeader_.cend(); 
-       it != end; ++it) {
-    string section = (*it).first;
-    const list<PostItem>& itemList = (*it).second;
-
-    // 별도로 등록된 Section 구분자를 있는지 찾고 그에 맞는 값을 넣는다.
-    auto sep_it = sectionSepHash_.find(section);
-    if (sep_it == sectionSepHash_.end())
-      post << section << ": ";
-    else
-      post << section << (*sep_it).second;
-    
-    std::string itemsHeaderString;
-    itemsHeaderString.reserve(33);
-    for (auto list_it = itemList.cbegin(), list_end = itemList.end();
-         list_it != list_end; ++list_it) {
-      const PostItem& item = (*list_it);
-
-      if (!item.name.empty())
-        itemsHeaderString += item.name + item.separator + "\"" + item.value + "\", ";
-      else
-        itemsHeaderString += item.value + "; ";
-    }
-    if (!itemsHeaderString.empty()) {
-      // 맨 뒤에 공백 제거
-      itemsHeaderString.erase(itemsHeaderString.end()-1);
-      // 그리고 맨 마지막의 ,나 ; 제거
-      itemsHeaderString.erase(itemsHeaderString.end()-1);
-    }
-
-    post << itemsHeaderString;
-    post << "\r\n";
-  }
-
+  post << makeHeaderString();
+  post << makeCustomHeaderString();
   post << "\r\n";
 
   const string& postString = post.str();
   // Send POST Header
   socket.send(boost::asio::buffer(postString.c_str(), postString.size()));
 
+  if (!sendContent(socket))
+    return false;
+  
+  response_ = recvResponse(socket);
+  if (response_.empty())
+    return false;
+
+  return true;
+}
+
+std::string CHttpPost::recvResponse(tcp::socket& socket) const {
+  char buf[1500] = {0};
+  string response;
+  response.reserve(2049);
+  while (1) {
+    boost::system::error_code error;
+
+    size_t len = socket.read_some(boost::asio::buffer(buf, 1500), error);
+
+    if (error == boost::asio::error::eof)
+      break; // Connection closed cleanly by peer.
+    else if (error)
+      return false;
+    //throw boost::system::system_error(error); // Some other error.
+
+    response.append(&buf[0], &buf[len]);
+  }
+
+  return response;
+}
+
+string CHttpPost::makeHeaderString() const {
+  stringstream post;
+  post << "POST " << path_ << ' ' << "HTTP/1.1" << "\r\n";
+  post << "Host: " << url_ << "\r\n";
+  post << "Connection: keep-alive" << "\r\n";
+  // Locale 변경으로 인한 영향으로 걍 정수값 출력하면 comma이 포함됨 그래서 string으로
+  post << "Content-Length: " << 
+    CStringUtil::IntToStrA(content_.size()) << "\r\n";
+  post << "User-Agent: " << userAgent_ << "\r\n";
+  post << "Content-Type: multipart/form-data;";
+  if (!boundary_.empty())
+    post << " boundary=" << boundary_;
+
+  post << "\r\n";
+
+  return post.str();
+}
+
+string CHttpPost::makeCustomHeaderString() const {
+  stringstream post;
+
+  for (auto it = customHeader_.cbegin(), _end = customHeader_.cend(); 
+       it != _end; ++it) {
+      string section = (*it).first;
+      const list<PostItem>& itemList = (*it).second;
+
+      // 별도로 등록된 Section 구분자를 있는지 찾고 그에 맞는 값을 넣는다.
+      auto sep_it = sectionSepHash_.find(section);
+      if (sep_it == sectionSepHash_.end())
+        post << section << ": ";
+      else
+        post << section << (*sep_it).second;
+
+      string itemsHeaderString;
+      itemsHeaderString.reserve(257);
+      for (auto list_it = itemList.cbegin(), list_end = itemList.end();
+        list_it != list_end; ++list_it) {
+          const PostItem& item = (*list_it);
+
+          if (!item.name.empty())
+            itemsHeaderString += item.name + item.separator + "\"" + item.value + "\", ";
+          else
+            itemsHeaderString += item.value + "; ";
+      }
+      if (!itemsHeaderString.empty()) {
+        // 맨 뒤에 공백 제거
+        itemsHeaderString.erase(itemsHeaderString.end()-1);
+        // 그리고 맨 마지막의 ,나 ; 제거
+        itemsHeaderString.erase(itemsHeaderString.end()-1);
+      }
+
+      post << itemsHeaderString;
+      post << "\r\n";
+  }
+
+  return post.str();
+}
+
+bool CHttpPost::sendContent(tcp::socket& socket) const {
   // Send POST Content
   int totalSendedSize = 0;
   int remainSize = content_.size();
@@ -107,35 +154,15 @@ bool CHttpPost::doPost(void) {
       else
         sendSize = 16*1024;
 
-      streamSize = socket.send(boost::asio::buffer(content_.c_str()+totalSendedSize, sendSize));
+      streamSize = socket.send(
+        boost::asio::buffer(content_.c_str()+totalSendedSize, sendSize));
       remainSize -= streamSize;
       totalSendedSize += streamSize;
     }
   }
-  catch(const std::exception& ex) {
-    MessageBoxA(NULL, ex.what(), "Error", MB_OK);
+  catch (const std::exception& /*ex*/) {
     return false;
   }
-  
-  string response;
-  response.reserve(1024);
-  while (1)
-  {
-    char buf[1024] = {0};
-    boost::system::error_code error;
-
-    size_t len = socket.read_some(boost::asio::buffer(buf), error);
-
-    if (error == boost::asio::error::eof)
-      break; // Connection closed cleanly by peer.
-    else if (error)
-      return false;
-      //throw boost::system::system_error(error); // Some other error.
-
-    response += buf;
-  }
-
-  response_ = response;
 
   return true;
 }

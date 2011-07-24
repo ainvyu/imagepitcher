@@ -141,7 +141,9 @@ std::string CTwitterOAuth::makeSignature(const SignatureData& data) const {
 
 bool CTwitterOAuth::doAuthorize()
 {
-  string authorizeUrl = "http://" + oauthurl::REQUEST_URL + oauthurl::AUTHORIZE + "?oauth_token=" + requestToken_;
+  string authorizeUrl = 
+    "http://" + oauthurl::REQUEST_URL + oauthurl::AUTHORIZE 
+    + "?oauth_token=" + requestToken_;
   ShellExecuteA(NULL, "open", authorizeUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
 
   return true;
