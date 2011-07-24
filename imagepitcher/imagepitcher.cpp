@@ -9,12 +9,27 @@
 
 CAppModule _Module;
 
-int Run(LPTSTR /*lpstrCmdLine*/ = NULL, int nCmdShow = SW_SHOWDEFAULT)
+int Run(LPTSTR lpstrCmdLine = NULL, int nCmdShow = SW_SHOWDEFAULT)
 {
+  CTwitterOAuth OAuth;
+  std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
+  std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
+
+  OAuth.setConsumerKey(consumerKey);
+  OAuth.setConsumerSecret(consumerSecret);
+  OAuth.setSignatureMethod("HMAC-SHA1");
+  
+  CTwitpicUploader Uploader(OAuth);
+  Uploader.addPicture(CONVERT_MULTIBYTE(lpstrCmdLine));
+
+  std::string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
+  Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
+  Uploader.setTweetMessage(tweetMsg);
+
   CMessageLoop theLoop;
   _Module.AddMessageLoop(&theLoop);
 
-  CMainDlg dlgMain;
+  CMainDlg dlgMain(OAuth, Uploader);
 
   if(dlgMain.Create(NULL) == NULL)
   {

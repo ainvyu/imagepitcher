@@ -16,7 +16,7 @@ class CMainDlg :
 public:
   enum { IDD = IDD_MAINDLG };
 
-  CMainDlg();
+  CMainDlg(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader);
   virtual ~CMainDlg() {};
 
   virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -50,6 +50,6 @@ public:
   void CloseDialog(int nVal);
 
 private:
-  CTwitterOAuth OAuth;
-  CTwitpicUploader Uploader;
+  CTwitterOAuth& OAuth;
+  CTwitpicUploader& Uploader;
 };

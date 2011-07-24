@@ -7,17 +7,12 @@
 
 using namespace std;
 
-CMainDlg::CMainDlg()
-  : Uploader(OAuth)
+CMainDlg::CMainDlg(CTwitterOAuth& _OAuth, CTwitpicUploader& _Uploader)
+  : OAuth(_OAuth)
+  , Uploader(_Uploader)
+  
 {
   CAppDataFile::GetInstance()->Init(_T("ImagePitcher"), CUtil::GetModulePath());
-
-  std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
-  std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
-
-  OAuth.setConsumerKey(consumerKey);
-  OAuth.setConsumerSecret(consumerSecret);
-  OAuth.setSignatureMethod("HMAC-SHA1");
 }
 
 BOOL CMainDlg::PreTranslateMessage( MSG* pMsg )
@@ -144,11 +139,6 @@ LRESULT CMainDlg::OnBnClickedButtonPin(WORD /*wNotifyCode*/, WORD /*wID*/, HWND 
     OAuth.setAccessSecret(accessSecret);
   }
 
-  string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
-
-  Uploader.addPicture("G:\\test.jpg");
-  Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
-  Uploader.setTweetMessage(tweetMsg);
   Uploader.doUpload();
   
   return 0;
