@@ -98,12 +98,21 @@ void CTwitpicUploader::doUpload()
       break;
     
     const std::string& response = post.getResponse();
-    MessageBoxA(NULL, response.c_str(), "Reponse", MB_OK);
-//     pugi::xml_document doc;
-//     pugi::xml_parse_result result = doc.load(response.c_str());
-//     if (!result)
-//       break;
+    if (!parseResponse(response))
+      break;
   }
+}
+
+bool CTwitpicUploader::parseResponse(const std::string response) {
+  int pos_start_content = response.find("\r\n\r\n") + 4;
+  string content = response.substr(pos_start_content);
+
+  pugi::xml_document doc;
+  pugi::xml_parse_result result = doc.load(content.c_str());
+  if (!result)
+    return false;
+
+  return true;
 }
 
 void CTwitpicUploader::addCustomHeader(CHttpPost& post) {
@@ -115,7 +124,7 @@ const std::vector<char> CTwitpicUploader::getPictureBinary(const std::string& fi
   binary.reserve((int)fs::file_size(fs::path(filePath)));
 
   ifstream file;
-  file.open(filePath, std::ios::in | std::ios::binary);
+  file.open(CONVERT_LOCAL(filePath), std::ios::in | std::ios::binary);
   if (file.fail())
     return binary;
 
@@ -167,7 +176,7 @@ string CTwitpicUploader::makeContent(const std::string& filePath,
   string fileContentType = getImageContentType(filePath);
   string fileHeader = 
     CStringUtil::Format("Content-Disposition: file; name=\"media\"; filename=\"%s\"", 
-    fs::path(filePath).filename().string<string>().c_str());
+    fs::path(CONVERT_LOCAL(filePath)).filename().string<string>().c_str());
   const vector<char> fileData = getPictureBinary(filePath);
 
   ssContents << fileHeader << "\r\n";
@@ -183,7 +192,7 @@ string CTwitpicUploader::makeContent(const std::string& filePath,
 }
 
 std::string CTwitpicUploader::getImageContentType(const std::string& filePath) {
-  boost::filesystem::path image_path(filePath);
+  boost::filesystem::path image_path(CONVERT_LOCAL(filePath));
   string ext = image_path.extension().string();
 
   if (".jpg" == ext) {

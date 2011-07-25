@@ -31,6 +31,9 @@
     <Filter Include="Twitpic">
       <UniqueIdentifier>{ad9d7f1b-93d8-4ae4-8610-b485a6049c46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dialog">
+      <UniqueIdentifier>{73fb13f5-9e5a-4435-a3d6-2d84d46c76aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -97,7 +100,13 @@
       <Filter>Twitpic</Filter>
     </ClCompile>
     <ClCompile Include="pindlg.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="optiondlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="registermenu.cpp">
+      <Filter>util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +180,13 @@
       <Filter>Twitpic</Filter>
     </ClInclude>
     <ClInclude Include="pindlg.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="optiondlg.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="registermenu.h">
+      <Filter>util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

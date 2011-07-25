@@ -68,14 +68,14 @@ BEGIN
     PUSHBUTTON      "OK",IDC_BUTTON_PIN,90,0,32,12
 END
 
-IDD_MAINDLG DIALOGEX 0, 0, 128, 28
+IDD_OPTIONDLG DIALOGEX 0, 0, 192, 47
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
-CAPTION "imagepitcher"
+CAPTION "Option"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    EDITTEXT        IDC_EDIT_PIN,27,6,58,12,ES_AUTOHSCROLL
-    LTEXT           "PIN",IDC_STATIC,7,8,12,8
-    PUSHBUTTON      "OK",IDC_BUTTON_PIN,89,6,32,12
+    PUSHBUTTON      "Register",IDC_BUTTON_SHELLEX_REGISTER,68,15,50,14
+    PUSHBUTTON      "Unregister",IDC_BUTTON_SHELLEX_UNREGISTER,125,15,50,14
+    LTEXT           "Shell Extension:",IDC_STATIC,11,17,52,8
 END
 
 
@@ -91,13 +91,12 @@ BEGIN
     BEGIN
     END
 
-    IDD_MAINDLG, DIALOG
+    IDD_OPTIONDLG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 121
-        TOPMARGIN, 3
-        BOTTOMMARGIN, 12
-        HORZGUIDE, 10
+        LEFTMARGIN, 3
+        RIGHTMARGIN, 185
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 39
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -254,6 +253,50 @@ BEGIN
 END
 
 #endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_PROGRESS DIALOGEX 0, 0, 150, 27
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Uploading..."
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,93,6,50,14
+    CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,7,80,13
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_PROGRESS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 143
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 20
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

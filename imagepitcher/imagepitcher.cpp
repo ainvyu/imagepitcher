@@ -6,6 +6,7 @@
 #include "resource.h"
 
 #include "pindlg.h"
+#include "optiondlg.h"
 
 #include "oauth.h"
 #include "twitpicuploader.h"
@@ -65,6 +66,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
   //	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
   ATLASSERT(SUCCEEDED(hRes));
 
+  // Initialize String Encode class
+  CStringEncode::InitLocale();
+
   // this resolves ATL window thunking problem when Microsoft Layer for Unicode (MSLU) is used
   ::DefWindowProc(NULL, 0, 0, 0L);
 
@@ -74,9 +78,12 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
   ATLASSERT(SUCCEEDED(hRes));
 
   int nRet = 0;
-  // BLOCK: Run application
-  {
-    CStringEncode::InitLocale();
+
+  if (lpstrCmdLine == _T("/o")) {
+    COptionDlg dlg;
+    dlg.DoModal();
+  }
+  else {
     CAppDataFile::GetInstance()->Init(_T("ImagePitcher"), CUtil::GetModulePath());
 
     CTwitterOAuth OAuth;
@@ -88,7 +95,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
     OAuth.setSignatureMethod("HMAC-SHA1");
 
     CTwitpicUploader Uploader(OAuth);
-    Uploader.addPicture(CONVERT_MULTIBYTE(lpstrCmdLine));
+    Uploader.addPicture(CONVERT_UTF8(lpstrCmdLine));
 
     std::string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
     Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");

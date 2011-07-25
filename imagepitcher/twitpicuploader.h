@@ -32,6 +32,8 @@ protected:
   std::string getUploadUrl() const { return "api.twitpic.com"; }
   std::string getUploadPath() const { return "/1/upload.xml"; }
 
+  bool parseResponse(const std::string response);
+
 protected:
   std::string nonce;
   std::string timeStamp;

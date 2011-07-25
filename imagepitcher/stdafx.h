@@ -76,3 +76,4 @@ extern CAppModule _Module;
 #include "stringutil.h"
 #include "stringencode.h"
 #include "appdatafile.h"
+#include "registermenu.h"

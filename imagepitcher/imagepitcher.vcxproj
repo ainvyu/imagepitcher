@@ -112,6 +112,7 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="optiondlg.cpp" />
     <ClCompile Include="pindlg.cpp" />
     <ClCompile Include="appdatafile.cpp" />
     <ClCompile Include="encryptionmanager.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="imagepitcher.cpp" />
     <ClCompile Include="oauth.cpp" />
     <ClCompile Include="pugixml-1.0\src\pugixml.cpp" />
+    <ClCompile Include="registermenu.cpp" />
     <ClCompile Include="sha1.cpp" />
     <ClCompile Include="simplebase64.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -139,6 +141,7 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="optiondlg.h" />
     <ClInclude Include="pindlg.h" />
     <ClInclude Include="appdatafile.h" />
     <ClInclude Include="encryptionmanager.h" />
@@ -151,6 +154,7 @@
     <ClInclude Include="oauth.h" />
     <ClInclude Include="pugixml-1.0\src\pugiconfig.hpp" />
     <ClInclude Include="pugixml-1.0\src\pugixml.hpp" />
+    <ClInclude Include="registermenu.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sha1.h" />
     <ClInclude Include="simplebase64.h" />
