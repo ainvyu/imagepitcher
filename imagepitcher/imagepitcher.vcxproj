@@ -35,13 +35,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>Debug</IntDir>
-    <OutDir>Debug</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>Release</IntDir>
-    <OutDir>Release</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -112,7 +112,7 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="pindlg.cpp" />
     <ClCompile Include="appdatafile.cpp" />
     <ClCompile Include="encryptionmanager.cpp" />
     <ClCompile Include="filecache.cpp" />
@@ -121,7 +121,6 @@
     <ClCompile Include="httpget.cpp" />
     <ClCompile Include="httppost.cpp" />
     <ClCompile Include="imagepitcher.cpp" />
-    <ClCompile Include="maindlg.CPP" />
     <ClCompile Include="oauth.cpp" />
     <ClCompile Include="pugixml-1.0\src\pugixml.cpp" />
     <ClCompile Include="sha1.cpp" />
@@ -140,7 +139,7 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="pindlg.h" />
     <ClInclude Include="appdatafile.h" />
     <ClInclude Include="encryptionmanager.h" />
     <ClInclude Include="filecache.h" />
@@ -149,7 +148,6 @@
     <ClInclude Include="httpget.h" />
     <ClInclude Include="httppost.h" />
     <ClInclude Include="macro.h" />
-    <ClInclude Include="MainDlg.h" />
     <ClInclude Include="oauth.h" />
     <ClInclude Include="pugixml-1.0\src\pugiconfig.hpp" />
     <ClInclude Include="pugixml-1.0\src\pugixml.hpp" />

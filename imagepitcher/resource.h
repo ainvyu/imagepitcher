@@ -3,6 +3,7 @@
 // Used by imagepitcher.rc
 //
 #define IDD_ABOUTBOX                    100
+#define IDD_PIN                         100
 #define IDR_MAINFRAME                   128
 #define IDD_MAINDLG                     129
 #define IDC_EDIT_PIN                    1000

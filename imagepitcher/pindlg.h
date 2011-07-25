@@ -4,15 +4,16 @@
 
 #pragma once
 
-class CAboutDlg : public CDialogImpl<CAboutDlg>
+class CPinDlg : public CDialogImpl<CPinDlg>
 {
 public:
-  enum { IDD = IDD_ABOUTBOX };
+  enum { IDD = IDD_PIN };
 
-  BEGIN_MSG_MAP(CAboutDlg)
+  BEGIN_MSG_MAP(CPinDlg)
     MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
     COMMAND_ID_HANDLER(IDOK, OnCloseCmd)
     COMMAND_ID_HANDLER(IDCANCEL, OnCloseCmd)
+    COMMAND_HANDLER(IDC_BUTTON_PIN, BN_CLICKED, OnBnClickedButtonPin)
   END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -22,4 +23,10 @@ public:
 
   LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
   LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+  LRESULT OnBnClickedButtonPin(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+
+  const std::string& getPin() const { return pin; }
+
+private:
+  std::string pin;
 };

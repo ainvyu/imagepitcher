@@ -5,53 +5,64 @@
 
 #include "resource.h"
 
-#include "MainDlg.h"
+#include "pindlg.h"
+
+#include "oauth.h"
+#include "twitpicuploader.h"
+
+using namespace std;
 
 CAppModule _Module;
 
-int Run(LPTSTR lpstrCmdLine = NULL, int nCmdShow = SW_SHOWDEFAULT)
+void DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
 {
-  CTwitterOAuth OAuth;
-  std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
-  std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
+  std::string accessToken = CONVERT_MULTIBYTE(
+    CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessToken")));
 
-  OAuth.setConsumerKey(consumerKey);
-  OAuth.setConsumerSecret(consumerSecret);
-  OAuth.setSignatureMethod("HMAC-SHA1");
-  
-  CTwitpicUploader Uploader(OAuth);
-  Uploader.addPicture(CONVERT_MULTIBYTE(lpstrCmdLine));
+  if (accessToken.empty()) {
+    // Start Authorize
+    Uploader.doAuthorize();
 
-  std::string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
-  Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
-  Uploader.setTweetMessage(tweetMsg);
+    CPinDlg pinDlg;
+    pinDlg.DoModal();
 
-  CMessageLoop theLoop;
-  _Module.AddMessageLoop(&theLoop);
+    const string& pin = pinDlg.getPin();
+    OAuth.setOAuthVerifier(pin);
+    OAuth.doAccessToken();
 
-  CMainDlg dlgMain(OAuth, Uploader);
+    // Save OAuth data.
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("RequestToken"),
+      CONVERT_WIDE(OAuth.getRequestToken()));
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("RequestTokenSecret"),
+      CONVERT_WIDE(OAuth.getRequestTokenSecret()));
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("AccessToken"),
+      CONVERT_WIDE(OAuth.getAccessToken()));
+    CAppDataFile::GetInstance()->SetAppData(_T("OAuth"), _T("AccessSecret"),
+      CONVERT_WIDE(OAuth.getAccessSecret()));
+  }
+  else {
+    string requestToken = CONVERT_MULTIBYTE(
+      CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("RequestToken")));
+    string requestTokenSecret = CONVERT_MULTIBYTE(
+      CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("RequestTokenSecret")));
+    string accessSecret = CONVERT_MULTIBYTE(
+      CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessSecret")));
 
-  if(dlgMain.Create(NULL) == NULL)
-  {
-    ATLTRACE(_T("Main dialog creation failed!\n"));
-    return 0;
+    OAuth.setRequestToken(requestToken);
+    OAuth.setRequestTokenSecret(requestTokenSecret);
+    OAuth.setAccessToken(accessToken);
+    OAuth.setAccessSecret(accessSecret);
   }
 
-  dlgMain.ShowWindow(nCmdShow);
-
-  int nRet = theLoop.Run();
-
-  _Module.RemoveMessageLoop();
-  return nRet;
+  Uploader.doUpload();
 }
 
-int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int nCmdShow)
+int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int /*nCmdShow*/)
 {
   HRESULT hRes = ::CoInitialize(NULL);
-  CStringEncode::InitLocale();
-// If you are running on NT 4.0 or higher you can use the following call instead to 
-// make the EXE free threaded. This means that calls come in on a random RPC thread.
-//	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+  // If you are running on NT 4.0 or higher you can use the following call instead to 
+  // make the EXE free threaded. This means that calls come in on a random RPC thread.
+  //	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
   ATLASSERT(SUCCEEDED(hRes));
 
   // this resolves ATL window thunking problem when Microsoft Layer for Unicode (MSLU) is used
@@ -62,7 +73,29 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
   hRes = _Module.Init(NULL, hInstance);
   ATLASSERT(SUCCEEDED(hRes));
 
-  int nRet = Run(lpstrCmdLine, nCmdShow);
+  int nRet = 0;
+  // BLOCK: Run application
+  {
+    CStringEncode::InitLocale();
+    CAppDataFile::GetInstance()->Init(_T("ImagePitcher"), CUtil::GetModulePath());
+
+    CTwitterOAuth OAuth;
+    std::string consumerKey = "8fxwQe0zkggUtgeg9Cw6FQ";
+    std::string consumerSecret = "H0r6ELPFd973ylH7e1IwQA8BVdGIsSOAZgwGX2J3SKo";
+
+    OAuth.setConsumerKey(consumerKey);
+    OAuth.setConsumerSecret(consumerSecret);
+    OAuth.setSignatureMethod("HMAC-SHA1");
+
+    CTwitpicUploader Uploader(OAuth);
+    Uploader.addPicture(CONVERT_MULTIBYTE(lpstrCmdLine));
+
+    std::string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
+    Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
+    Uploader.setTweetMessage(tweetMsg);
+
+    DoUpload(OAuth, Uploader);
+  }
 
   _Module.Term();
   ::CoUninitialize();

@@ -72,12 +72,6 @@
     <ClCompile Include="urlencode.cpp">
       <Filter>util\crypt</Filter>
     </ClCompile>
-    <ClCompile Include="maindlg.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AboutDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="appdatafile.cpp">
       <Filter>util</Filter>
     </ClCompile>
@@ -102,15 +96,12 @@
     <ClCompile Include="twitpicuploader2.cpp">
       <Filter>Twitpic</Filter>
     </ClCompile>
+    <ClCompile Include="pindlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AboutDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -178,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="twitpicuploader2.h">
       <Filter>Twitpic</Filter>
+    </ClInclude>
+    <ClInclude Include="pindlg.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -75,3 +75,4 @@ extern CAppModule _Module;
 #include "util.h"
 #include "stringutil.h"
 #include "stringencode.h"
+#include "appdatafile.h"

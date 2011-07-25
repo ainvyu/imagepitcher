@@ -1,6 +1,9 @@
 
 /ipch
+/Debug
+/Release
 /imagepitcher/Debug
+/imagepitcher/Release
 *.sdf
 *.opensdf
 *.aps
