@@ -33,7 +33,7 @@ std::string CTwitpicUploader::generateNonce() {
 
 void CTwitpicUploader::addPicture( const string& strPath )
 {
-  filelist_.push_back(strPath);
+  fileList.push_back(strPath);
 }
 
 std::string CTwitpicUploader::makeSignature(const SignatureData& data) {
@@ -69,15 +69,13 @@ std::string CTwitpicUploader::makeSignature(const SignatureData& data) {
 }
 
 void CTwitpicUploader::doAuthorize() {
-  
-
   OAuth.doRequestToken();
   OAuth.doAuthorize();
 }
 
-void CTwitpicUploader::doUpload()
+bool CTwitpicUploader::doUpload()
 {
-  for (auto it = filelist_.cbegin(), _end = filelist_.cend(); it != _end; ++it) {
+  for (auto it = fileList.cbegin(), _end = fileList.cend(); it != _end; ++it) {
     const std::string& filePath = (*it);
     const std::string& boundary = makeBoundary();
     const std::string& content = makeContent(filePath, boundary);
@@ -95,22 +93,38 @@ void CTwitpicUploader::doUpload()
     post.setUserAgent("Image Pitcher");
 
     if (!post.doPost())
-      break;
+      return false;
     
     const std::string& response = post.getResponse();
     if (!parseResponse(response))
-      break;
+      return false;
   }
+
+  return true;
 }
 
 bool CTwitpicUploader::parseResponse(const std::string response) {
   int pos_start_content = response.find("\r\n\r\n") + 4;
-  string content = response.substr(pos_start_content);
+  int pos_start_xml = response.find("<?xml", pos_start_content);
+  int pos_end_xml = response.find("0\r\n\r\n", pos_start_xml);
+  string content = response.substr(pos_start_xml, pos_end_xml - pos_start_xml);
 
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load(content.c_str());
   if (!result)
     return false;
+
+  pugi::xml_node imageNode = doc.child("image");
+  if (imageNode.empty())
+    return false;
+
+  pugi::xml_node urlNode = imageNode.child("url");
+  if (urlNode.empty())
+    return false;
+
+  pugi::xml_node urlNodeChild = urlNode.first_child();
+
+  reponseUrlList.push_back(urlNodeChild.value());
 
   return true;
 }
@@ -121,10 +135,12 @@ void CTwitpicUploader::addCustomHeader(CHttpPost& post) {
 
 const std::vector<char> CTwitpicUploader::getPictureBinary(const std::string& filePath) {
   std::vector<char> binary;
-  binary.reserve((int)fs::file_size(fs::path(filePath)));
+
+  tstring filePathW = CONVERT_LOCAL(filePath);
+  binary.reserve((int)fs::file_size( fs::path(filePathW)) );
 
   ifstream file;
-  file.open(CONVERT_LOCAL(filePath), std::ios::in | std::ios::binary);
+  file.open(filePathW, std::ios::in | std::ios::binary);
   if (file.fail())
     return binary;
 

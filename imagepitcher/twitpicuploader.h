@@ -15,8 +15,12 @@ public:
   void setTweetMessage(const std::string& _twtMsg) { tweetMsg_ = _twtMsg; }
 
   void addPicture(const std::string& strPath);
-  virtual void doUpload();
+  virtual bool doUpload();
+
   void doAuthorize();
+
+  const std::list<std::string>& getReponseUrlList() const 
+  { return reponseUrlList; }
 
 protected:
   virtual std::string makeContent(const std::string& filePath, 
@@ -38,10 +42,12 @@ protected:
   std::string nonce;
   std::string timeStamp;
 
-  std::list<std::string> filelist_;
+  std::list<std::string> fileList;
   std::string apiKey_;
   std::string tweetMsg_;
 
   CTwitterOAuth& OAuth;
+
+  std::list<std::string> reponseUrlList;
 };
 

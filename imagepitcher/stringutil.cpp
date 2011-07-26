@@ -7,18 +7,18 @@
 
 using namespace std;
 
-tstring CStringUtil::Join(const vector<tstring>& vec, const tstring& delimiter)
+string CStringUtil::Join(const list<string>& list, const string& delimiter)
 {
-  tstring ret_string;
+  string ret_string;
 
-  for (auto it = vec.begin(), e = vec.end(); it != e; ++it)
+  for (auto it = list.begin(), e = list.end(); it != e; ++it)
   {
     ret_string += *it;
     ret_string += delimiter;
   }
 
   // 맨 마지막에 추가되는 delimiter 는 제거
-  if (!vec.empty() && !delimiter.empty())
+  if (!list.empty() && !delimiter.empty())
     ret_string.erase(ret_string.size()-1, 1);
 
   return ret_string;
@@ -39,6 +39,23 @@ std::string CStringUtil::Join(const std::vector<char>& vec, const std::string& d
         ret_string.erase(ret_string.size()-1, 1);
 
     return ret_string;
+} 
+
+tstring CStringUtil::Join(const vector<tstring>& vec, const tstring& delimiter)
+{
+  tstring ret_string;
+
+  for (auto it = vec.begin(), e = vec.end(); it != e; ++it)
+  {
+    ret_string += *it;
+    ret_string += delimiter;
+  }
+
+  // 맨 마지막에 추가되는 delimiter 는 제거
+  if (!vec.empty() && !delimiter.empty())
+    ret_string.erase(ret_string.size()-1, 1);
+
+  return ret_string;
 } 
 
 void CStringUtil::Tokenize(const string& str, list<string>& tokens, const string& delimiters)

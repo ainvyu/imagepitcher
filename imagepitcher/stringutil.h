@@ -16,6 +16,8 @@ public:
 	// Split 은 Perl 스타일로 코딩하려고 Tokenize Redirect후 split된 vector를 반환.
 	static std::vector<tstring> Split(const tstring& str, const tstring& separators = _T(" "));
   static std::vector<std::string> Split(const std::string& str, const std::string& separators = " ");
+
+  static std::string Join(const std::list<std::string>& list, const std::string& delimiter);
   static std::string Join(const std::vector<char>& vec, const std::string& delimiter = " ");
 	static tstring Join(const std::vector<tstring>& vec, const tstring& delimiter = _T(" "));
 
