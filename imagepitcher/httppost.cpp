@@ -74,27 +74,29 @@ string CHttpPost::makeCustomHeaderString() const {
 }
 
 bool CHttpPost::sendContent(tcp::socket& socket) const {
+
   // Send POST Content
   int totalSendedSize = 0;
   int remainSize = content_.size();
   int streamSize = 0;
-  try {
-    while (remainSize != 0) {
-      int sendSize;
 
-      if (remainSize <= 16*1024)
-        sendSize = remainSize;
-      else
-        sendSize = 16*1024;
+  boost::system::error_code errCode;
+  while (remainSize != 0) {
+    int sendSize;
 
-      streamSize = socket.send(
-        boost::asio::buffer(content_.c_str()+totalSendedSize, sendSize));
-      remainSize -= streamSize;
-      totalSendedSize += streamSize;
-    }
-  }
-  catch (const std::exception& /*ex*/) {
-    return false;
+    if (remainSize <= 16*1024)
+      sendSize = remainSize;
+    else
+      sendSize = 16*1024;
+
+    string::const_pointer pNextPacket = content_.c_str()+totalSendedSize;
+    streamSize = socket.send(
+      boost::asio::buffer(pNextPacket, sendSize), 0, errCode);
+    if (errCode)
+      return false;
+    
+    remainSize -= streamSize;
+    totalSendedSize += streamSize;
   }
 
   return true;
@@ -104,13 +106,11 @@ bool CHttpPost::doPost(void) {
   tcp::resolver resolver(io_service_);
   tcp::resolver::query query(url_, port_);
 
+  boost::system::error_code errCode;
   tcp::resolver::iterator endpoint_iterator;
-  try {
-    endpoint_iterator = resolver.resolve(query);
-  }
-  catch (std::exception& /*ex*/) {
+  endpoint_iterator = resolver.resolve(query, errCode);
+  if (errCode)
     return false;
-  }
 
   tcp::resolver::iterator _end;
 
@@ -123,7 +123,7 @@ bool CHttpPost::doPost(void) {
     socket.connect(*endpoint_iterator++, error);
   }
 
-  if (!!error) {
+  if (error) {
     return false;
   }
 

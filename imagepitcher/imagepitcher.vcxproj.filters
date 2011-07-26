@@ -108,6 +108,12 @@
     <ClCompile Include="registermenu.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="clipboard.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -186,6 +192,12 @@
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="registermenu.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="clipboard.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
       <Filter>util</Filter>
     </ClInclude>
   </ItemGroup>

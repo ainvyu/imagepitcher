@@ -52,6 +52,7 @@ extern CAppModule _Module;
 #include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
 #include <boost/circular_buffer.hpp>
+#include <boost/program_options.hpp>
 
 #include "pugixml-1.0/src/pugiconfig.hpp"
 #include "pugixml-1.0/src/pugixml.hpp"
@@ -72,8 +73,10 @@ extern CAppModule _Module;
 #endif //_UNICODE
 
 #include "macro.h"
+#include "debug.h"
 #include "util.h"
 #include "stringutil.h"
 #include "stringencode.h"
 #include "appdatafile.h"
 #include "registermenu.h"
+#include "clipboard.h"

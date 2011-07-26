@@ -112,6 +112,8 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="clipboard.cpp" />
+    <ClCompile Include="debug.cpp" />
     <ClCompile Include="optiondlg.cpp" />
     <ClCompile Include="pindlg.cpp" />
     <ClCompile Include="appdatafile.cpp" />
@@ -141,6 +143,8 @@
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="clipboard.h" />
+    <ClInclude Include="debug.h" />
     <ClInclude Include="optiondlg.h" />
     <ClInclude Include="pindlg.h" />
     <ClInclude Include="appdatafile.h" />

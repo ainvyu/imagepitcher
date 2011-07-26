@@ -12,10 +12,10 @@
 #include "twitpicuploader.h"
 
 using namespace std;
-
+namespace po = boost::program_options;
 CAppModule _Module;
 
-void DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
+bool DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
 {
   std::string accessToken = CONVERT_MULTIBYTE(
     CAppDataFile::GetInstance()->GetAppData(_T("OAuth"), _T("AccessToken")));
@@ -55,11 +55,40 @@ void DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
     OAuth.setAccessSecret(accessSecret);
   }
 
-  Uploader.doUpload();
+  return Uploader.doUpload();
 }
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int /*nCmdShow*/)
 {
+  vector<tstring> argv;
+  vector<tstring> files;
+  po::variables_map vm;
+  try {
+    argv = po::split_winmain(lpstrCmdLine);
+    po::options_description desc("Allowed options");
+    po::positional_options_description p;
+    // p.add("files", -1 )은 기본 옵션 -아무런 옵션 이름을 안주고 인자를 주면 
+    // 그거에 대한 인자를 준걸로 받아들임
+    p.add("files", -1);
+    
+    desc.add_options()
+      ("option,o", "produce a help message")
+      ("files,f", po::wvalue<vector<tstring>>(&files)->multitoken(), "files list")
+      ;
+
+    po::store(
+      po::wcommand_line_parser(argv).options(desc).positional(p).run(), vm);
+    po::notify(vm);
+  }
+  catch (std::exception& e) {
+    MessageBoxA(NULL, e.what(), "Error", MB_OK);
+    return 0;
+  }
+  catch (...) {
+    MessageBoxA(NULL, "Unknown error", "Error", MB_OK);
+    return 0;
+  } 
+
   HRESULT hRes = ::CoInitialize(NULL);
   // If you are running on NT 4.0 or higher you can use the following call instead to 
   // make the EXE free threaded. This means that calls come in on a random RPC thread.
@@ -79,7 +108,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
   int nRet = 0;
 
-  if (lpstrCmdLine == _T("/o")) {
+  if (vm.count("option")) {
     COptionDlg dlg;
     dlg.DoModal();
   }
@@ -95,13 +124,28 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
     OAuth.setSignatureMethod("HMAC-SHA1");
 
     CTwitpicUploader Uploader(OAuth);
-    Uploader.addPicture(CONVERT_UTF8(lpstrCmdLine));
+
+    // 경로 추가
+    foreach (it, files) {
+      const tstring path(*it);
+      Uploader.addPicture(CONVERT_UTF8(path));
+    }
 
     std::string tweetMsg; // 일단 빈칸으로..
     Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
     Uploader.setTweetMessage(tweetMsg);
 
-    DoUpload(OAuth, Uploader);
+    if (DoUpload(OAuth, Uploader)) {
+      // Copy to Clipboard
+      const list<string>& urlList = Uploader.getReponseUrlList();
+      tstring clipboardText = CONVERT_WIDE(CStringUtil::Join(urlList, " "));
+      CClipboard::CopyTextToClipboard(clipboardText.c_str());
+
+      MessageBox(NULL, _T("Upload Success"), _T("Upload Success"), MB_OK);
+    }
+    else {
+      MessageBox(NULL, _T("Upload Fail"), _T("Upload Fail"), MB_OK);
+    }
   }
 
   _Module.Term();
