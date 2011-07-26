@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 
-#define _COMPILING_DLL
 #include "UrlEncode.h"
 
 using namespace std;

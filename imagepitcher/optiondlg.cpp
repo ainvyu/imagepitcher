@@ -46,9 +46,10 @@ LRESULT COptionDlg::OnBnClickedButtonShellExRegister(WORD /*wNotifyCode*/, WORD 
   ssCmd << _T("\"") << CUtil::GetModulePathName() << _T("\"") << _T(" ")
     << _T("\"") << _T("%1") << _T("\"");
 
-  if (CRegisterMenu::Register(_T("Image Pitcher"), _T(".jpg"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("JPEG")) &&
-      CRegisterMenu::Register(_T("Image Pitcher"), _T(".gif"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("GIF")) &&
-      CRegisterMenu::Register(_T("Image Pitcher"), _T(".png"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("PNG")))
+//   if (CRegisterMenu::Register(_T("Image Pitcher"), _T(".jpg"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("JPEG")) &&
+//       CRegisterMenu::Register(_T("Image Pitcher"), _T(".gif"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("GIF")) &&
+//       CRegisterMenu::Register(_T("Image Pitcher"), _T(".png"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("PNG")))
+  if (CRegisterMenu::Register(_T("Image Pitcher"), _T("*"), _T("Upload to Twitpic"), _T("Upload to Twitpic"), ssCmd.str(), _T("All extension")))
     MessageBox(_T("Register Success"), _T("Success!"), MB_OK);
   else
     MessageBox(CUtil::GetLastErrorMessage().c_str());
@@ -84,9 +85,10 @@ LRESULT COptionDlg::OnBnClickedButtonShellExUnregister(WORD /*wNotifyCode*/, WOR
     }
   }
 
-  if (CRegisterMenu::UnRegister(_T("Image Pitcher"), _T(".jpg"), _T("Upload to Twitpic")) &&
-      CRegisterMenu::UnRegister(_T("Image Pitcher"), _T(".gif"), _T("Upload to Twitpic")) &&
-      CRegisterMenu::UnRegister(_T("Image Pitcher"), _T(".png"), _T("Upload to Twitpic")))
+//   if (CRegisterMenu::UnRegister(_T("Image Pitcher"), _T(".jpg"), _T("Upload to Twitpic")) &&
+//       CRegisterMenu::UnRegister(_T("Image Pitcher"), _T(".gif"), _T("Upload to Twitpic")) &&
+//       CRegisterMenu::UnRegister(_T("Image Pitcher"), _T(".png"), _T("Upload to Twitpic")))
+  if (CRegisterMenu::UnRegister(_T("Image Pitcher"), _T("*"), _T("Upload to Twitpic")))
     MessageBox(_T("Unregister Success"), _T("Success!"), MB_OK);
   else
     MessageBox(CUtil::GetLastErrorMessage().c_str());

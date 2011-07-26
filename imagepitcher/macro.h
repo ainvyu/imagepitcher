@@ -50,20 +50,39 @@ template <typename T> inline void SAFE_DELETE_ARRAY_ARRAY(T& p, int n)	{ if (p) 
 #define FOREACH_VECTOR(i,c)     for( i = 0; i < (c).size(); ++i )
 #define FOREACH_VECTOR_PTR(i,c) for( i = 0; i < (c)->size(); ++i )
 
+#ifdef _HAS_CPP0X
+#define foreach(it, cont) \
+  for (auto it = (cont).begin(), _end = (cont).end(); it != _end; ++it)
+#else
+#define foreach(it, cont) \
+  for (__typeof((cont).begin())::iterator it = cont.begin(), _end = cont.end(); \
+  it != _end; \
+  ++it)
+#endif
+
+#define ci(container) container ## iter
+#define foreach_value(var, container) \
+  for (typeof((container).begin()) ci(container) = container.begin(); \
+  ci(container) != container.end(); ) \
+  for (typeof(ci(container)->second)* var = &ci(container)->second; \
+  ci(container) != container.end(); \
+  (++ci(container) != container.end()) ? \
+  (var = &ci(container)->second) : var)
+
 // CLEANUP 매크로
 #define CLEANUP_MAP(i,c)        for( i = (c).begin(); i != (c).end(); ++i ) \
-	delete (*i).second; \
-	(c).clear();
+  delete (*i).second; \
+  (c).clear();
 #define CLEANUP_MAP_PTR(i,c)    for( i = (c)->begin(); i != (c)->end(); ++i ) \
-	delete (*i).second; \
-	(c)->clear();
+  delete (*i).second; \
+  (c)->clear();
 
 #define CLEANUP_VECTOR(i,c)     for( i = 0; i < (c).size(); ++i ) \
-	delete c[i]; \
-	(c).clear();
+  delete c[i]; \
+  (c).clear();
 #define CLEANUP_VECTOR_PTR(i,c) for( i = 0; i < (c)->size(); ++i ) \
-	delete c->at(i); \
-	(c)->clear();
+  delete c->at(i); \
+  (c)->clear();
 
 /*
 Breakpoint 매크로
@@ -110,13 +129,13 @@ int main()
 #pragma NOTE( "NOTE 메시지 3...!\n\
 ------------------------------------------------------------")
 
-	return 0;
+  return 0;
 }
 */
 
 #define BX_(x)		((x) - (((x) >> 1) & 0x77777777)  \
-					- (((x) >> 2) & 0x33333333)       \
-					- (((x) >> 3) & 0x11111111))
+          - (((x) >> 2) & 0x33333333)       \
+          - (((x) >> 3) & 0x11111111))
 #define BITCOUNT(x)     (((BX_(x)+(BX_(x)>>4)) & 0x0F0F0F0F) % 255)
 
 // Radian to Degree
@@ -135,17 +154,17 @@ int main()
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-	TypeName(const TypeName&);             \
-	void operator=(const TypeName&)
+  TypeName(const TypeName&);             \
+  void operator=(const TypeName&)
 /*
 예로 class Foo:  에서는
 
 class Foo {
 public:
-	Foo(int f);
-	~Foo();
+  Foo(int f);
+  ~Foo();
 private:
-	DISALLOW_COPY_AND_ASSIGN(Foo);
+  DISALLOW_COPY_AND_ASSIGN(Foo);
 };
 
 처럼 하면 된다.

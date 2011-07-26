@@ -1,11 +1,5 @@
 #pragma once
 
-#ifdef _COMPILING_DLL
-#define LIBSPEC __declspec(dllexport)
-#else
-#define LIBSPEC __declspec(dllimport)
-#endif
-
 class CUrlEncode
 {
 public:
