@@ -22,6 +22,10 @@ public:
   const std::list<std::string>& getReponseUrlList() const 
   { return reponseUrlList; }
 
+  int getProgressPercent() const { return ProgressPercent; }
+  bool isComplete() const { return CompleteFlag; }
+  bool isFail() const { return FailFlag; }
+
 protected:
   virtual std::string makeContent(const std::string& filePath, 
                                   const std::string& boundary);
@@ -39,6 +43,10 @@ protected:
   bool parseResponse(const std::string response);
 
 protected:
+  int ProgressPercent;
+  bool CompleteFlag;
+  bool FailFlag;
+
   std::string nonce;
   std::string timeStamp;
 

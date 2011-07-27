@@ -114,6 +114,9 @@
     <ClCompile Include="debug.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="progressdlg.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -199,6 +202,9 @@
     </ClInclude>
     <ClInclude Include="debug.h">
       <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="progressdlg.h">
+      <Filter>Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

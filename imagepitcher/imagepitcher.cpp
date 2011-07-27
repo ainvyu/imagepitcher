@@ -7,6 +7,7 @@
 
 #include "pindlg.h"
 #include "optiondlg.h"
+#include "progressdlg.h"
 
 #include "oauth.h"
 #include "twitpicuploader.h"
@@ -55,7 +56,15 @@ bool DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
     OAuth.setAccessSecret(accessSecret);
   }
 
-  return Uploader.doUpload();
+  bool bRet;
+  boost::thread UploadThread(bind(&CTwitpicUploader::doUpload, &Uploader));
+  UploadThread.detach();
+  CProgressDlg ProgressDlg;
+  ProgressDlg.setUploader(&Uploader);
+  ProgressDlg.DoModal(); // Block
+  
+  bRet = Uploader.isComplete(); 
+  return bRet;
 }
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int /*nCmdShow*/)

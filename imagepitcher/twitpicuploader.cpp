@@ -16,6 +16,9 @@ using boost::asio::ip::tcp;
 
 CTwitpicUploader::CTwitpicUploader(CTwitterOAuth& _oauth)
   : OAuth(_oauth)
+  , ProgressPercent(0)
+  , CompleteFlag(false)
+  , FailFlag(false)
 {
 }
 
@@ -75,6 +78,7 @@ void CTwitpicUploader::doAuthorize() {
 
 bool CTwitpicUploader::doUpload()
 {
+  int Count = fileList.size();
   for (auto it = fileList.cbegin(), _end = fileList.cend(); it != _end; ++it) {
     const std::string& filePath = (*it);
     const std::string& boundary = makeBoundary();
@@ -92,13 +96,23 @@ bool CTwitpicUploader::doUpload()
     post.setContent(content);
     post.setUserAgent("Image Pitcher");
 
-    if (!post.doPost())
+    if (!post.doPost()) {
+      FailFlag = true;
       return false;
+    }
+
+    ProgressPercent = 50 / Count;
     
     const std::string& response = post.getResponse();
-    if (!parseResponse(response))
+    if (!parseResponse(response)) {
+      FailFlag = true;
       return false;
+    }
+
+    ProgressPercent = 100 / Count;
   }
+
+  CompleteFlag = true;
 
   return true;
 }

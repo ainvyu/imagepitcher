@@ -54,6 +54,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Zm128 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +126,7 @@
     <ClCompile Include="httppost.cpp" />
     <ClCompile Include="imagepitcher.cpp" />
     <ClCompile Include="oauth.cpp" />
+    <ClCompile Include="progressdlg.cpp" />
     <ClCompile Include="pugixml-1.0\src\pugixml.cpp" />
     <ClCompile Include="registermenu.cpp" />
     <ClCompile Include="sha1.cpp" />
@@ -156,6 +158,7 @@
     <ClInclude Include="httppost.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="oauth.h" />
+    <ClInclude Include="progressdlg.h" />
     <ClInclude Include="pugixml-1.0\src\pugiconfig.hpp" />
     <ClInclude Include="pugixml-1.0\src\pugixml.hpp" />
     <ClInclude Include="registermenu.h" />

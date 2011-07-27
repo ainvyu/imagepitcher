@@ -45,14 +45,16 @@ extern CAppModule _Module;
 #include <sstream>
 #include <vector>
 #include <list>
-
 #include <map>
 #include <set>
 #include <unordered_map>
+#include <functional>
+
 #include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/program_options.hpp>
+#include <boost/thread.hpp>
 
 #include "pugixml-1.0/src/pugiconfig.hpp"
 #include "pugixml-1.0/src/pugixml.hpp"
