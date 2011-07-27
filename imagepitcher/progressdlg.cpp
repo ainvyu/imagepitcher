@@ -49,8 +49,6 @@ void CProgressDlg::RefreshProgressBar()
     int percent = pUploader->getProgressPercent();
     progressCtrl.SetPos(percent);
 
-    
-
     if (pUploader->isFail() || pUploader->isComplete()) {
       KillTimer(ID_EVENT_REFRESH_CONNECTION_LIST);
       EndDialog(ID_EVENT_REFRESH_CONNECTION_LIST);
