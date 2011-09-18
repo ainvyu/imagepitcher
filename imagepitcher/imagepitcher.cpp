@@ -1,4 +1,4 @@
-// imagepitcher.cpp : main source file for imagepitcher.exe
+ï»¿// imagepitcher.cpp : main source file for imagepitcher.exe
 //
 
 #include "stdafx.h"
@@ -67,7 +67,11 @@ bool DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
   return bRet;
 }
 
-int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int /*nCmdShow*/)
+int WINAPI _tWinMain(
+  HINSTANCE hInstance, 
+  HINSTANCE /*hPrevInstance*/, 
+  LPTSTR lpstrCmdLine, 
+  int /*nCmdShow*/)
 {
   vector<tstring> argv;
   vector<tstring> files;
@@ -76,8 +80,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
     argv = po::split_winmain(lpstrCmdLine);
     po::options_description desc("Allowed options");
     po::positional_options_description p;
-    // p.add("files", -1 )Àº ±âº» ¿É¼Ç -¾Æ¹«·± ¿É¼Ç ÀÌ¸§À» ¾ÈÁÖ°í ÀÎÀÚ¸¦ ÁÖ¸é 
-    // ±×°Å¿¡ ´ëÇÑ ÀÎÀÚ¸¦ ÁØ°É·Î ¹Ş¾ÆµéÀÓ
+    // p.add("files", -1 )ì€ ê¸°ë³¸ ì˜µì…˜ -ì•„ë¬´ëŸ° ì˜µì…˜ ì´ë¦„ì„ ì•ˆì£¼ê³  ì¸ìë¥¼ ì£¼ë©´ 
+    // ê·¸ê±°ì— ëŒ€í•œ ì¸ìë¥¼ ì¤€ê±¸ë¡œ ë°›ì•„ë“¤ì„
     p.add("files", -1);
     
     desc.add_options()
@@ -134,13 +138,13 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 
     CTwitpicUploader Uploader(OAuth);
 
-    // °æ·Î Ãß°¡
+    // ê²½ë¡œ ì¶”ê°€
     foreach (it, files) {
       const tstring path(*it);
       Uploader.addPicture(CONVERT_UTF8(path));
     }
 
-    std::string tweetMsg; // ÀÏ´Ü ºóÄ­À¸·Î..
+    std::string tweetMsg; // ì¼ë‹¨ ë¹ˆì¹¸ìœ¼ë¡œ..
     Uploader.setAPIKey("f0f31e3f13e8f1dfed50ab4e22a27b60");
     Uploader.setTweetMessage(tweetMsg);
 
