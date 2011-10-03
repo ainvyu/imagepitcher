@@ -117,6 +117,9 @@
     <ClCompile Include="progressdlg.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="twitpicpost.cpp">
+      <Filter>util\http</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="progressdlg.h">
       <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="twitpicpost.h">
+      <Filter>util\http</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -138,6 +138,7 @@
     <ClCompile Include="stringencode.cpp" />
     <ClCompile Include="stringutil.cpp" />
     <ClCompile Include="textfile.cpp" />
+    <ClCompile Include="twitpicpost.cpp" />
     <ClCompile Include="twitpicuploader.cpp" />
     <ClCompile Include="twitpicuploader2.cpp" />
     <ClCompile Include="urlencode.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="stringencode.h" />
     <ClInclude Include="stringutil.h" />
     <ClInclude Include="textfile.h" />
+    <ClInclude Include="twitpicpost.h" />
     <ClInclude Include="twitpicuploader.h" />
     <ClInclude Include="twitpicuploader2.h" />
     <ClInclude Include="urlencode.h" />

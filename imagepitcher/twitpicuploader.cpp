@@ -2,7 +2,7 @@
 #include "twitpicuploader.h"
 
 #include "stringutil.h"
-#include "httppost.h"
+#include "twitpicpost.h"
 
 #include "hmac_sha1.h"
 #include "urlencode.h"
@@ -87,7 +87,7 @@ bool CTwitpicUploader::doUpload()
     nonce = generateNonce();
     timeStamp = generateTimeStamp();
 
-    CHttpPost post;
+    TwitpicPost post;
     addCustomHeader(post);
 
     post.setURL(getUploadUrl());

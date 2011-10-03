@@ -34,7 +34,7 @@ private:
   std::string makeHeaderString() const;
   std::string makeCustomHeaderString() const;
   bool sendContent(boost::asio::ip::tcp::socket& socket) const;
-  std::string recvResponse(boost::asio::ip::tcp::socket& socket) const;
+  virtual std::string recvResponse(boost::asio::ip::tcp::socket& socket) const;
 
 private:
   typedef std::unordered_map<std::string, std::list<PostItem>> headerHash;
