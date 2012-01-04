@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+﻿#include "StdAfx.h"
 #include "twitpicpost.h"
 
 using namespace std;
@@ -15,7 +15,7 @@ TwitpicPost::~TwitpicPost(void)
 }
 
 std::string TwitpicPost::recvResponse(tcp::socket& socket) const {
-  char buf[1500] = {0};
+  char buf[1501] = {0};
   string response;
   response.reserve(2049);
   while (1) {
