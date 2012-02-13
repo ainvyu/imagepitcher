@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 struct PostItem {
   PostItem(std::string _name, std::string _sep, std::string _val)
@@ -24,17 +24,22 @@ public:
   void setContent(const std::string& _content) { content_ = _content; }
   void setUserAgent(const std::string& _userAgent) { userAgent_ = _userAgent; }
   void setPort(const std::string& _port) { port_ = _port; }
+  void setProgressCallback( std::function<void (const int&)> fProgCallback) { progCallbackFunc_ = fProgCallback; }
+
   void addHeader(const std::string& _section, PostItem item);
   void registerSectionSeparator(const std::string& _section, const std::string& _sep);
 
   bool doPost(void);
   const std::string& getResponse() const { return response_; }
   
+  void setPostPercent(int percent) { postProgPercent = percent; progCallbackFunc_(percent*0.8); }
+  void setResponsePercent(int percent) { responseProgPercent = percent; progCallbackFunc_(postProgPercent*0.8 + percent*0.2); } 
+
 private:
   std::string makeHeaderString() const;
   std::string makeCustomHeaderString() const;
-  bool sendContent(boost::asio::ip::tcp::socket& socket) const;
-  virtual std::string recvResponse(boost::asio::ip::tcp::socket& socket) const;
+  bool sendContent(boost::asio::ip::tcp::socket& socket);
+  virtual std::string recvResponse(boost::asio::ip::tcp::socket& socket);
 
 private:
   typedef std::unordered_map<std::string, std::list<PostItem>> headerHash;
@@ -51,4 +56,8 @@ private:
   std::string port_;
 
   std::string response_;
+
+  std::function<void (const int&)> progCallbackFunc_;
+  int postProgPercent;
+  int responseProgPercent;
 };

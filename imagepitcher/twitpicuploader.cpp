@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+ï»¿#include "StdAfx.h"
 #include "twitpicuploader.h"
 
 #include "stringutil.h"
@@ -16,9 +16,9 @@ using boost::asio::ip::tcp;
 
 CTwitpicUploader::CTwitpicUploader(CTwitterOAuth& _oauth)
   : OAuth(_oauth)
-  , ProgressPercent(0)
-  , CompleteFlag(false)
-  , FailFlag(false)
+  , progressPercent(0)
+  , completeFlag(false)
+  , failFlag(false)
 {
 }
 
@@ -44,8 +44,8 @@ std::string CTwitpicUploader::makeSignature(const SignatureData& data) {
   string key = OAuth.getConsumerSecret() + "&" + OAuth.getRequestToken();
 
   // Build base string.
-  // base stringÀº http header·Î º¸³»´Â ÆÄ¶ó¹ÌÅÍÀÌ´Ù.
-  // [http method] & [url] & [parameter] Çü½ÄÀ¸·Î »ý¼ºÇÑ´Ù.
+  // base stringì€ http headerë¡œ ë³´ë‚´ëŠ” íŒŒë¼ë¯¸í„°ì´ë‹¤.
+  // [http method] & [url] & [parameter] í˜•ì‹ìœ¼ë¡œ ìƒì„±í•œë‹¤.
   string requestUrl = data.requestUrl;
   // Sorted params
   string parameter;
@@ -58,7 +58,7 @@ std::string CTwitpicUploader::makeSignature(const SignatureData& data) {
   }
 
   if (!parameter.empty()) {
-    // ¸Ç ¸¶Áö¸· &¸¦ Áö¿ò.
+    // ë§¨ ë§ˆì§€ë§‰ &ë¥¼ ì§€ì›€.
     parameter.erase(parameter.end()-1);
   }
 
@@ -78,7 +78,7 @@ void CTwitpicUploader::doAuthorize() {
 
 bool CTwitpicUploader::doUpload()
 {
-  int Count = fileList.size();
+  int count = fileList.size();
   for (auto it = fileList.cbegin(), _end = fileList.cend(); it != _end; ++it) {
     const std::string& filePath = (*it);
     const std::string& boundary = makeBoundary();
@@ -88,31 +88,36 @@ bool CTwitpicUploader::doUpload()
     timeStamp = generateTimeStamp();
 
     TwitpicPost post;
-    addCustomHeader(post);
+    addCustomHeaderTo(post);
 
     post.setURL(getUploadUrl());
     post.setPath(getUploadPath());
     post.setBoundary(boundary);
     post.setContent(content);
     post.setUserAgent("Image Pitcher");
+    post.setProgressCallback([this] (const int& percent) {
+      this->setProgressPercent(percent);
+    });
 
+    // post ratio is 90/100
     if (!post.doPost()) {
-      FailFlag = true;
+      failFlag = true;
       return false;
     }
 
-    ProgressPercent = 50 / Count;
+    progressPercent = 50 / count;
     
+    // post ratio is 10/100
     const std::string& response = post.getResponse();
     if (!parseResponse(response)) {
-      FailFlag = true;
+      failFlag = true;
       return false;
     }
 
-    ProgressPercent = 100 / Count;
+    progressPercent = 100 / count;
   }
 
-  CompleteFlag = true;
+  completeFlag = true;
 
   return true;
 }
@@ -143,7 +148,7 @@ bool CTwitpicUploader::parseResponse(const std::string response) {
   return true;
 }
 
-void CTwitpicUploader::addCustomHeader(CHttpPost& post) {
+void CTwitpicUploader::addCustomHeaderTo(CHttpPost& post) {
   // nothing
 }
 

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+﻿#include "StdAfx.h"
 #include "twitpicuploader2.h"
 
 #include "stringutil.h"
@@ -66,7 +66,7 @@ std::string CTwitpicUploader2::makeContent(const std::string& filePath,
   return ssContents.str();
 }
 
-void CTwitpicUploader2::addCustomHeader( CHttpPost& post ) {
+void CTwitpicUploader2::addCustomHeaderTo( CHttpPost& post ) {
   //     SignatureData data;
   //     data.method = "POST";
   //     data.requestUrl = "http://" + uploadUrl + getUrl;

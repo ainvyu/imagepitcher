@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "oauth.h"
 
@@ -22,9 +22,10 @@ public:
   const std::list<std::string>& getReponseUrlList() const 
   { return reponseUrlList; }
 
-  int getProgressPercent() const { return ProgressPercent; }
-  bool isComplete() const { return CompleteFlag; }
-  bool isFail() const { return FailFlag; }
+  void setProgressPercent(int percent) { progressPercent = percent; }
+  int getProgressPercent() const { return progressPercent; }
+  bool isComplete() const { return completeFlag; }
+  bool isFail() const { return failFlag; }
 
 protected:
   virtual std::string makeContent(const std::string& filePath, 
@@ -35,7 +36,7 @@ protected:
   std::string makeSignature(const SignatureData& data);
   std::string generateTimeStamp();
   std::string generateNonce();
-  virtual void addCustomHeader(CHttpPost& post);
+  virtual void addCustomHeaderTo(CHttpPost& post);
 
   std::string getUploadUrl() const { return "api.twitpic.com"; }
   std::string getUploadPath() const { return "/1/upload.xml"; }
@@ -43,9 +44,9 @@ protected:
   bool parseResponse(const std::string response);
 
 protected:
-  int ProgressPercent;
-  bool CompleteFlag;
-  bool FailFlag;
+  int progressPercent;
+  bool completeFlag;
+  bool failFlag;
 
   std::string nonce;
   std::string timeStamp;

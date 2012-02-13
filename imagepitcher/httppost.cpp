@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+ï»¿#include "StdAfx.h"
 #include "httppost.h"
 
 using namespace std;
@@ -7,6 +7,8 @@ using boost::asio::ip::tcp;
 
 CHttpPost::CHttpPost(void)
   : port_("80")
+  , postProgPercent(0)
+  , responseProgPercent(0)
 {
 }
 
@@ -20,7 +22,7 @@ string CHttpPost::makeHeaderString() const {
   post << "POST " << path_ << ' ' << "HTTP/1.1" << "\r\n";
   post << "Host: " << url_ << "\r\n";
   post << "Connection: keep-alive" << "\r\n";
-  // Locale º¯°æÀ¸·Î ÀÎÇÑ ¿µÇâÀ¸·Î °Á Á¤¼ö°ª Ãâ·ÂÇÏ¸é commaÀÌ Æ÷ÇÔµÊ ±×·¡¼­ stringÀ¸·Î
+  // Locale ë³€ê²½ìœ¼ë¡œ ì¸í•œ ì˜í–¥ìœ¼ë¡œ ê± ì •ìˆ˜ê°’ ì¶œë ¥í•˜ë©´ commaì´ í¬í•¨ë¨ ê·¸ë˜ì„œ stringìœ¼ë¡œ
   post << "Content-Length: " << 
     CStringUtil::IntToStrA(content_.size()) << "\r\n";
   post << "User-Agent: " << userAgent_ << "\r\n";
@@ -41,7 +43,7 @@ string CHttpPost::makeCustomHeaderString() const {
       string section = (*it).first;
       const list<PostItem>& itemList = (*it).second;
 
-      // º°µµ·Î µî·ÏµÈ Section ±¸ºĞÀÚ¸¦ ÀÖ´ÂÁö Ã£°í ±×¿¡ ¸Â´Â °ªÀ» ³Ö´Â´Ù.
+      // ë³„ë„ë¡œ ë“±ë¡ëœ Section êµ¬ë¶„ìë¥¼ ìˆëŠ”ì§€ ì°¾ê³  ê·¸ì— ë§ëŠ” ê°’ì„ ë„£ëŠ”ë‹¤.
       auto sep_it = sectionSepHash_.find(section);
       if (sep_it == sectionSepHash_.end())
         post << section << ": ";
@@ -60,9 +62,9 @@ string CHttpPost::makeCustomHeaderString() const {
             itemsHeaderString += item.value + "; ";
       }
       if (!itemsHeaderString.empty()) {
-        // ¸Ç µÚ¿¡ °ø¹é Á¦°Å
+        // ë§¨ ë’¤ì— ê³µë°± ì œê±°
         itemsHeaderString.erase(itemsHeaderString.end()-1);
-        // ±×¸®°í ¸Ç ¸¶Áö¸·ÀÇ ,³ª ; Á¦°Å
+        // ê·¸ë¦¬ê³  ë§¨ ë§ˆì§€ë§‰ì˜ ,ë‚˜ ; ì œê±°
         itemsHeaderString.erase(itemsHeaderString.end()-1);
       }
 
@@ -73,7 +75,7 @@ string CHttpPost::makeCustomHeaderString() const {
   return post.str();
 }
 
-bool CHttpPost::sendContent(tcp::socket& socket) const {
+bool CHttpPost::sendContent(tcp::socket& socket) {
 
   // Send POST Content
   int totalSendedSize = 0;
@@ -92,11 +94,17 @@ bool CHttpPost::sendContent(tcp::socket& socket) const {
     string::const_pointer pNextPacket = content_.c_str()+totalSendedSize;
     streamSize = socket.send(
       boost::asio::buffer(pNextPacket, sendSize), 0, errCode);
+
     if (errCode)
       return false;
     
     remainSize -= streamSize;
     totalSendedSize += streamSize;
+
+    if (totalSendedSize != 0) {
+      int percent = (content_.size() / totalSendedSize * 100);
+      setPostPercent(percent);
+    }
   }
 
   return true;
@@ -146,7 +154,7 @@ bool CHttpPost::doPost(void) {
   return true;
 }
 
-std::string CHttpPost::recvResponse(tcp::socket& socket) const {
+std::string CHttpPost::recvResponse(tcp::socket& socket) {
   char buf[1500] = {0};
   string response;
   response.reserve(2049);
@@ -163,6 +171,8 @@ std::string CHttpPost::recvResponse(tcp::socket& socket) const {
 
     response.append(&buf[0], &buf[len]);
   }
+
+  setResponsePercent(100);
 
   return response;
 }
