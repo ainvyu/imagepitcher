@@ -15,7 +15,6 @@ TwitpicPost::~TwitpicPost(void)
 }
 
 std::string TwitpicPost::recvResponse(tcp::socket& socket) {
-  MessageBox(NULL, _T("test"), _T("test"), MB_OK);
   char buf[1501] = {0};
   string response;
   response.reserve(2049);

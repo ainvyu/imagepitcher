@@ -102,7 +102,7 @@ bool CHttpPost::sendContent(tcp::socket& socket) {
     totalSendedSize += streamSize;
 
     if (totalSendedSize != 0) {
-      int percent = (content_.size() / totalSendedSize * 100);
+      int percent = (totalSendedSize / content_.size() * 100);
       setPostPercent(percent);
     }
   }

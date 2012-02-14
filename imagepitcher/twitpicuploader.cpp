@@ -99,7 +99,7 @@ bool CTwitpicUploader::doUpload()
       this->setProgressPercent(percent);
     });
 
-    // post ratio is 90/100
+    // post ratio is 80/100
     if (!post.doPost()) {
       failFlag = true;
       return false;
