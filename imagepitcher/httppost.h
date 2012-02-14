@@ -32,8 +32,8 @@ public:
   bool doPost(void);
   const std::string& getResponse() const { return response_; }
   
-  void setPostPercent(int percent) { postProgPercent = percent; progCallbackFunc_(percent*0.8); }
-  void setResponsePercent(int percent) { responseProgPercent = percent; progCallbackFunc_(postProgPercent*0.8 + percent*0.2); } 
+  void setPostPercent(int percent) { postProgPercent = percent; progCallbackFunc_(postProgPercent*0.8); }
+  void setResponsePercent(int percent) { responseProgPercent = percent; progCallbackFunc_(postProgPercent*0.8 + responseProgPercent*0.2); } 
 
 private:
   std::string makeHeaderString() const;

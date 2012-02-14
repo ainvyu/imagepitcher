@@ -105,16 +105,12 @@ bool CTwitpicUploader::doUpload()
       return false;
     }
 
-    progressPercent = 50 / count;
-    
     // post ratio is 10/100
     const std::string& response = post.getResponse();
     if (!parseResponse(response)) {
       failFlag = true;
       return false;
     }
-
-    progressPercent = 100 / count;
   }
 
   completeFlag = true;
