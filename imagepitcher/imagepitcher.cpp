@@ -16,6 +16,10 @@ using namespace std;
 namespace po = boost::program_options;
 CAppModule _Module;
 
+void PrintHelp(const tstring& strMessage) {
+  MessageBox(NULL, strMessage.c_str(), _T("Help"), MB_OK | MB_ICONERROR);
+}
+
 bool DoUpload(CTwitterOAuth& OAuth, CTwitpicUploader& Uploader)
 {
   std::string accessToken = CONVERT_MULTIBYTE(
@@ -76,16 +80,17 @@ int WINAPI _tWinMain(
   vector<tstring> argv;
   vector<tstring> files;
   po::variables_map vm;
+  po::options_description desc("Allowed options");
   try {
     argv = po::split_winmain(lpstrCmdLine);
-    po::options_description desc("Allowed options");
     po::positional_options_description p;
     // p.add("files", -1 )은 기본 옵션 -아무런 옵션 이름을 안주고 인자를 주면 
     // 그거에 대한 인자를 준걸로 받아들임
     p.add("files", -1);
     
     desc.add_options()
-      ("option,o", "produce a help message")
+      ("option,o", "Popup option dialog.")
+      ("help,h", "produce a help message.")
       ("files,f", po::wvalue<vector<tstring>>(&files)->multitoken(), "files list")
       ;
 
@@ -125,7 +130,7 @@ int WINAPI _tWinMain(
     COptionDlg dlg;
     dlg.DoModal();
   }
-  else {
+  else if (vm.count("files")) {
     CAppDataFile::GetInstance()->Init(_T("ImagePitcher"), CUtil::GetModulePath());
 
     CTwitterOAuth OAuth;
@@ -159,6 +164,11 @@ int WINAPI _tWinMain(
     else {
       MessageBox(NULL, _T("Upload Fail"), _T("Upload Fail"), MB_OK);
     }
+  }
+  else { // if (vm.count("help") {
+    stringstream str;
+    str << desc;
+    PrintHelp(CStringEncode::mbs_to_wcs2(str.str()));
   }
 
   _Module.Term();
