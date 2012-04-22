@@ -24,16 +24,25 @@ public:
   void setContent(const std::string& _content) { content_ = _content; }
   void setUserAgent(const std::string& _userAgent) { userAgent_ = _userAgent; }
   void setPort(const std::string& _port) { port_ = _port; }
-  void setProgressCallback( std::function<void (const int&)> fProgCallback) { progCallbackFunc_ = fProgCallback; }
+  void setProgressCallback( std::function<void (const int&)> fProgCallback) {
+    progCallbackFunc_ = fProgCallback; 
+  }
 
   void addHeader(const std::string& _section, PostItem item);
-  void registerSectionSeparator(const std::string& _section, const std::string& _sep);
+  void registerSectionSeparator(
+    const std::string& _section, const std::string& _sep);
 
   bool doPost(void);
   const std::string& getResponse() const { return response_; }
   
-  void setPostPercent(int percent) { postProgPercent = percent; progCallbackFunc_(postProgPercent*0.9); }
-  void setResponsePercent(int percent) { responseProgPercent = percent; progCallbackFunc_(postProgPercent*0.9 + responseProgPercent*0.1); } 
+  void setPostPercent(int percent) { 
+    postProgPercent = percent; 
+    progCallbackFunc_((int)(postProgPercent*0.9)); 
+  }
+  void setResponsePercent(int percent) { 
+    responseProgPercent = percent; 
+    progCallbackFunc_((int)(postProgPercent*0.9 + responseProgPercent*0.1)); 
+  } 
 
 private:
   std::string makeHeaderString() const;

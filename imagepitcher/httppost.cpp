@@ -5,10 +5,13 @@ using namespace std;
 namespace fs = boost::filesystem;
 using boost::asio::ip::tcp;
 
+const int MTU_SIZE = 1500;
+
 CHttpPost::CHttpPost(void)
   : port_("80")
   , postProgPercent(0)
   , responseProgPercent(0)
+  , progCallbackFunc_([this] (const int& percent) {})
 {
 }
 
@@ -122,17 +125,24 @@ bool CHttpPost::doPost(void) {
 
   tcp::resolver::iterator _end;
 
+  boost::system::error_code ec;
   tcp::socket socket(io_service_);
+
   boost::system::error_code error = boost::asio::error::host_not_found;
 
-  while (error && endpoint_iterator != _end)
-  {
+  while (error && endpoint_iterator != _end) {
     socket.close();
     socket.connect(*endpoint_iterator++, error);
   }
 
   if (error) {
     return false;
+  }
+
+  tcp::no_delay option(true);
+  socket.set_option(option, ec);
+  if (ec) {
+    string ecMsg = ec.message();
   }
 
   stringstream post;
@@ -147,7 +157,16 @@ bool CHttpPost::doPost(void) {
   if (!sendContent(socket))
     return false;
   
-  response_ = recvResponse(socket);
+  // 안하면 상대방이 response 다 보내도 않끊긴다.
+  socket.shutdown(tcp::socket::shutdown_send);
+
+  try {
+    response_ = recvResponse(socket);
+  }
+  catch (boost::system::system_error& /*err*/) {
+    return false;
+  }
+
   if (response_.empty())
     return false;
 
@@ -155,19 +174,18 @@ bool CHttpPost::doPost(void) {
 }
 
 std::string CHttpPost::recvResponse(tcp::socket& socket) {
-  char buf[1500] = {0};
+  char buf[MTU_SIZE] = {0};
   string response;
   response.reserve(2049);
   while (1) {
     boost::system::error_code error;
 
-    size_t len = socket.read_some(boost::asio::buffer(buf, 1500), error);
+    size_t len = socket.read_some(boost::asio::buffer(buf, MTU_SIZE), error);
 
     if (error == boost::asio::error::eof)
       break; // Connection closed cleanly by peer.
     else if (error)
-      return false;
-    //throw boost::system::system_error(error); // Some other error.
+      throw boost::system::system_error(error); // Some other error. WTH?
 
     response.append(&buf[0], &buf[len]);
   }
@@ -182,7 +200,7 @@ void CHttpPost::addHeader( const std::string& _section, PostItem _item )
   auto it = customHeader_.find(_section);
   if (it == customHeader_.end()) {
     pair<headerHash::iterator, bool> item = 
-      customHeader_.insert(headerHash::value_type(_section, list<PostItem>()));
+      customHeader_.insert(make_pair(_section, list<PostItem>()));
     it = item.first;
   }
   
@@ -190,7 +208,8 @@ void CHttpPost::addHeader( const std::string& _section, PostItem _item )
   itemList.push_back(_item);
 }
 
-void CHttpPost::registerSectionSeparator( const std::string& _section, const std::string& _sep )
+void CHttpPost::registerSectionSeparator( 
+  const std::string& _section, const std::string& _sep )
 {
-  sectionSepHash_.insert(unordered_map<string, string>::value_type(_section, _sep));
+  sectionSepHash_.insert(make_pair(_section, _sep));
 }

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+ï»¿#include "StdAfx.h"
 #include "oauth.h"
 
 #include "stringutil.h"
@@ -51,7 +51,7 @@ bool CTwitterOAuth::doRequestToken()
   string nonce = generateNonce();
   string timeStamp = generateTimeStamp();
 
-  // oauth_nonce´Â °³¹ßÀÚ°¡ ÀÓÀÇ·Î »ı¼º
+  // oauth_nonceëŠ” ê°œë°œìê°€ ì„ì˜ë¡œ ìƒì„±
   //post.RegisterSectionSeparator("OAuth", " ");
 
   // Make Signature
@@ -112,8 +112,8 @@ std::string CTwitterOAuth::makeSignature(const SignatureData& data) const {
   string key = consumerSecret_ + "&" + requestToken_;
 
   // Build base string.
-  // base stringÀº http header·Î º¸³»´Â ÆÄ¶ó¹ÌÅÍÀÌ´Ù.
-  // [http method] & [url] & [parameter] Çü½ÄÀ¸·Î »ı¼ºÇÑ´Ù.
+  // base stringì€ http headerë¡œ ë³´ë‚´ëŠ” íŒŒë¼ë¯¸í„°ì´ë‹¤.
+  // [http method] & [url] & [parameter] í˜•ì‹ìœ¼ë¡œ ìƒì„±í•œë‹¤.
   string requestUrl = data.requestUrl;
   // Sorted params
   string parameter;
@@ -126,7 +126,7 @@ std::string CTwitterOAuth::makeSignature(const SignatureData& data) const {
   }
 
   if (!parameter.empty()) {
-    // ¸Ç ¸¶Áö¸· &¸¦ Áö¿ò.
+    // ë§¨ ë§ˆì§€ë§‰ &ë¥¼ ì§€ì›€.
     parameter.erase(parameter.end()-1);
   }
 
@@ -160,7 +160,7 @@ bool CTwitterOAuth::doAccessToken()
   string nonce = generateNonce();
   string timeStamp = generateTimeStamp();
 
-  // oauth_nonce´Â °³¹ßÀÚ°¡ ÀÓÀÇ·Î »ı¼º
+  // oauth_nonceëŠ” ê°œë°œìê°€ ì„ì˜ë¡œ ìƒì„±
   //post.RegisterSectionSeparator("OAuth", " ");
 
   // Make Signature

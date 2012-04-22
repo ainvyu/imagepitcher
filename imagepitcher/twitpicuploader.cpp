@@ -179,8 +179,8 @@ string CTwitpicUploader::makeContent(const std::string& filePath,
   ssContents << apiKey_ << "\r\n";
 
   ssContents << header << "\r\n";
-  ssContents << "Content-Disposition: form-data; name=\"consumer_token\"" << "\r\n";
-  ssContents << "\r\n";
+  ssContents << "Content-Disposition: form-data; name=\"consumer_token\"";
+  ssContents << "\r\n\r\n";
   ssContents << OAuth.getConsumerKey() << "\r\n";
 
   ssContents << header << "\r\n";
