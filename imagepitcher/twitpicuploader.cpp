@@ -1,6 +1,7 @@
 ﻿#include "StdAfx.h"
 #include "twitpicuploader.h"
 
+#include "httpresponseheaderparser.h"
 #include "stringutil.h"
 #include "twitpicpost.h"
 
@@ -119,7 +120,16 @@ bool CTwitpicUploader::doUpload()
 }
 
 bool CTwitpicUploader::parseResponse(const std::string response) {
-  int pos_start_content = response.find("\r\n\r\n") + 4;
+  int posHeaderStart = 0;
+  int posHeaderEnd = response.find("\r\n\r\n");
+  HttpResponseHeaderParser headerParser;
+  headerParser.parse(
+    response.substr(posHeaderStart, posHeaderEnd - posHeaderStart));
+  if (headerParser.getResponseCode() != 200) {
+    return false;
+  }
+
+  int pos_start_content = posHeaderEnd + 4;
   int pos_start_xml = response.find("<?xml", pos_start_content);
   int pos_end_xml = response.find("0\r\n\r\n", pos_start_xml);
   string content = response.substr(pos_start_xml, pos_end_xml - pos_start_xml);

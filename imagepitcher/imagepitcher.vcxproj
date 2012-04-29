@@ -115,6 +115,8 @@
   <ItemGroup>
     <ClCompile Include="clipboard.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="httprequestheaderparser.cpp" />
+    <ClCompile Include="httpresponseheaderparser.cpp" />
     <ClCompile Include="optiondlg.cpp" />
     <ClCompile Include="pindlg.cpp" />
     <ClCompile Include="appdatafile.cpp" />
@@ -148,6 +150,8 @@
   <ItemGroup>
     <ClInclude Include="clipboard.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="httprequestheaderparser.h" />
+    <ClInclude Include="httpresponseheaderparser.h" />
     <ClInclude Include="optiondlg.h" />
     <ClInclude Include="pindlg.h" />
     <ClInclude Include="appdatafile.h" />

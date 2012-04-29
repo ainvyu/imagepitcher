@@ -120,6 +120,12 @@
     <ClCompile Include="twitpicpost.cpp">
       <Filter>util\http</Filter>
     </ClCompile>
+    <ClCompile Include="httprequestheaderparser.cpp">
+      <Filter>util\http</Filter>
+    </ClCompile>
+    <ClCompile Include="httpresponseheaderparser.cpp">
+      <Filter>util\http</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -210,6 +216,12 @@
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="twitpicpost.h">
+      <Filter>util\http</Filter>
+    </ClInclude>
+    <ClInclude Include="httprequestheaderparser.h">
+      <Filter>util\http</Filter>
+    </ClInclude>
+    <ClInclude Include="httpresponseheaderparser.h">
       <Filter>util\http</Filter>
     </ClInclude>
   </ItemGroup>

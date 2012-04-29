@@ -1,4 +1,4 @@
-// stdafx.h : include file for standard system include files,
+﻿// stdafx.h : include file for standard system include files,
 //  or project specific include files that are used frequently, but
 //  are changed infrequently
 //
@@ -49,6 +49,7 @@ extern CAppModule _Module;
 #include <set>
 #include <unordered_map>
 #include <functional>
+#include <regex>
 
 #include <boost/filesystem.hpp>
 #include <boost/asio.hpp>
